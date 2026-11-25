@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>How to Record and Transcribe Microsoft Teams Calls on Windows (Free)</title>
-<meta name="description" content="Record both sides of a Microsoft Teams call on Windows and get a transcript, for free, without installing anything or uploading your audio.">
+<meta name="description" content="Step-by-step guide to recording and transcribing Microsoft Teams calls on Windows for free: setup, Teams audio settings, troubleshooting and turning the transcript into notes.">
 <link rel="canonical" href="https://freecallnotes.com/record-teams-calls/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/page.css">
 <meta property="og:site_name" content="FreeCallNotes">
 <meta property="og:title" content="How to Record and Transcribe Microsoft Teams Calls on Windows (Free)">
-<meta property="og:description" content="Record both sides of a Microsoft Teams call on Windows and get a transcript, for free, without installing anything or uploading your audio.">
+<meta property="og:description" content="Step-by-step guide to recording and transcribing Microsoft Teams calls on Windows for free: setup, Teams audio settings, troubleshooting and turning the transcript into notes.">
 <meta property="og:url" content="https://freecallnotes.com/record-teams-calls/">
 <meta property="og:type" content="article">
 <meta property="og:image" content="https://freecallnotes.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#131920">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "How to record and transcribe Microsoft Teams calls on Windows", "description": "Record both sides of a Microsoft Teams call on Windows and get a transcript, for free, without installing anything or uploading your audio.", "url": "https://freecallnotes.com/record-teams-calls/", "image": "https://freecallnotes.com/og.png", "author": {"@type": "Person", "name": "Nadir Khawaja"}, "datePublished": "2026-11-25", "about": {"@id": "https://freecallnotes.com/#app"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "How to record and transcribe Microsoft Teams calls on Windows", "description": "Step-by-step guide to recording and transcribing Microsoft Teams calls on Windows for free: setup, Teams audio settings, troubleshooting and turning the transcript into notes.", "url": "https://freecallnotes.com/record-teams-calls/", "image": "https://freecallnotes.com/og.png", "author": {"@type": "Person", "name": "Nadir Khawaja"}, "datePublished": "2026-11-25", "dateModified": "2026-11-25", "wordCount": 1481, "about": {"@id": "https://freecallnotes.com/#app"}}</script>
 </head>
 <body>
 <header><div class="wrap">
@@ -26,34 +26,137 @@
 <main><div class="wrap">
   <p class="crumb"><a href="/">FreeCallNotes</a> / Guide</p>
   <h1>How to record and transcribe Microsoft Teams calls on Windows</h1>
-  <p class="lead">FreeCallNotes records your voice and the other people on a Teams call as two separate tracks, then transcribes them on your own PC. It's free, open source and needs no installation.</p>
+  <p class="lead">FreeCallNotes records your voice and the other people on a Teams call as two separate tracks, then transcribes them on your own PC. It's free, open source and needs no installation. This guide covers setup, the Teams settings that matter, and what to do when something doesn't sound right.</p>
+  <p class="meta">Updated 25 November 2026 &middot; 7 min read</p>
+  <nav class="toc" aria-label="On this page">
+    <p>On this page</p>
+    <ol>
+      <li><a href="#before-you-start">Before you start</a></li>
+      <li><a href="#one-time-setup-about-five-minutes">One-time setup (about five minutes)</a></li>
+      <li><a href="#record-a-teams-call-step-by-step">Record a Teams call, step by step</a></li>
+      <li><a href="#set-up-teams-audio-so-both-sides-are-recorded">Set up Teams audio so both sides are recorded</a></li>
+      <li><a href="#teams-recording-or-freecallnotes">Teams recording or FreeCallNotes?</a></li>
+      <li><a href="#listen-only-meetings-and-webinars">Listen-only meetings and webinars</a></li>
+      <li><a href="#where-your-recording-is-saved">Where your recording is saved</a></li>
+      <li><a href="#turn-the-transcript-into-meeting-notes">Turn the transcript into meeting notes</a></li>
+      <li><a href="#getting-a-more-accurate-transcript">Getting a more accurate transcript</a></li>
+      <li><a href="#troubleshooting">Troubleshooting</a></li>
+      <li><a href="#consent-and-recording-at-work">Consent and recording at work</a></li>
+      <li><a href="#questions">Questions</a></li>
+    </ol>
+  </nav>
 
-<h2>Record a Teams call in five steps</h2>
-<ol>
-  <li><strong>Download FreeCallNotes</strong> and unzip it anywhere, such as your Documents folder.</li>
-  <li><strong>Double-click FreeCallNotes.exe.</strong> The first time, accept the short "Before you record" notice and wait while the speech model downloads (about 660&nbsp;MB, once).</li>
-  <li><strong>Join your meeting</strong> in the Teams desktop app or in your browser.</li>
-  <li><strong>Tell everyone you're recording</strong> and get their agreement, then press <strong>Record</strong>.</li>
-  <li><strong>Press Stop</strong> when the call ends. The transcript is ready within moments, in a dated folder with both audio tracks.</li>
-</ol>
-<h2>Why it works with Teams</h2>
-<p>FreeCallNotes doesn't connect to Teams at all. It records your default microphone and whatever plays through your default speakers or headphones, the same audio you hear. That means it works in the Teams app, Teams in a browser, and any other call app, and it doesn't stop Teams from using your microphone.</p>
-<h3>Tips for a clean Teams transcript</h3>
+<h2 id="before-you-start">Before you start</h2>
 <ul>
-  <li>Wear headphones, so your mic doesn't pick up the other side from your speakers.</li>
-  <li>Make sure the headset you use in Teams is also your Windows default microphone and speaker.</li>
-  <li>Check names and numbers in the transcript before you share notes.</li>
+  <li><strong>A Windows 10 or 11 PC (64-bit).</strong> No GPU needed; 8&nbsp;GB of RAM is recommended.</li>
+  <li><strong>About 2&nbsp;GB of free disk space</strong> for the app and speech model, plus about 230&nbsp;MB for each hour you record.</li>
+  <li><strong>An internet connection the first time only</strong>, to download the speech model (about 660&nbsp;MB). After that, recording and transcription work offline. Teams itself still needs the internet, of course.</li>
+  <li><strong>Headphones or a headset.</strong> Not strictly required, but they give a much cleaner transcript (see the tips below).</li>
+  <li><strong>The other people's agreement.</strong> Plan how you'll tell them you're recording.</li>
 </ul>
-<h2>Turn the transcript into meeting notes</h2>
-<p>Click "Show transcript for AI" and drop the file into the AI assistant you're allowed to use. The file contains the transcript and the instructions together, so you get a summary, decisions and action items in one step.</p>
-<h2>Recording at work</h2>
-<p>FreeCallNotes needs no installation or admin rights, but you still need to follow your employer's policies on recording calls and using AI tools, and the law where you and the other people are. Always get consent before you record.</p>
 
-  <h2>Questions</h2>
+<h2 id="one-time-setup-about-five-minutes">One-time setup (about five minutes)</h2>
+<ol>
+  <li><strong>Download FreeCallNotes</strong> (a 56&nbsp;MB zip file) and unzip it anywhere: Documents, Downloads or a USB stick. There's no installer and you don't need admin rights.</li>
+  <li><strong>Double-click FreeCallNotes.exe</strong> in the unzipped folder. If Windows shows "Windows protected your PC", click <em>More info</em> and then <em>Run anyway</em>. This appears because the app isn't code-signed yet; only do it for a copy downloaded from the official GitHub release.</li>
+  <li><strong>Read and accept the "Before you record" notice.</strong> It's a short reminder about consent, accuracy and AI assistants.</li>
+  <li><strong>Wait for "Ready".</strong> The first time, the app downloads the speech model into its own folder. Keep the window open until it finishes. It also adds a desktop icon so you can find it next time.</li>
+</ol>
+
+<h2 id="record-a-teams-call-step-by-step">Record a Teams call, step by step</h2>
+<ol>
+  <li><strong>Open FreeCallNotes</strong> before the meeting and wait for "Ready".</li>
+  <li><strong>Join the meeting</strong> in the Teams app or in Teams on the web. Meetings, one-to-one calls and group calls all work the same way.</li>
+  <li><strong>Tell everyone you're recording</strong> and get their agreement.</li>
+  <li><strong>Press Record.</strong> Your words appear under "User" and everyone else's under "System" as they speak.</li>
+  <li><strong>Press Stop</strong> when the call ends. The finished transcript is ready a few moments later.</li>
+</ol>
+
+<h2 id="set-up-teams-audio-so-both-sides-are-recorded">Set up Teams audio so both sides are recorded</h2>
+<p>FreeCallNotes doesn't connect to Teams. It records your Windows default microphone and whatever plays through your Windows default speakers or headphones. So Teams and Windows need to use the same devices:</p>
+<ol>
+  <li>In Teams, open <strong>Settings &gt; Devices</strong> (or <em>Device settings</em> from the <em>More</em> menu during a call) and note the speaker and microphone it uses.</li>
+  <li>In Windows, open <strong>Settings &gt; System &gt; Sound</strong> and set the same headset as the default output and input.</li>
+  <li>Make a quick test call in Teams and watch the User and System meters in FreeCallNotes move.</li>
+</ol>
+<p class="note">Using Teams in the browser? It normally plays through the Windows default device, so the same check applies.</p>
+
+<h2 id="teams-recording-or-freecallnotes">Teams recording or FreeCallNotes?</h2>
+<p>Teams has its own recording and transcription, and if your organisation has it turned on, it's a good option. FreeCallNotes is for the calls where it isn't available or isn't what you need.</p>
+
+<div class="tbl"><table>
+  <thead><tr><th scope="col"></th><th scope="col">Teams's own recording</th><th scope="col">FreeCallNotes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Availability</th><td>Depends on your licence and your IT admin's settings</td><td>Any Teams call you can hear on your PC</td></tr>
+    <tr><th scope="row">Who can start it</th><td>Usually organisers and presenters, as set by policy</td><td>You</td></tr>
+    <tr><th scope="row">Where it's stored</th><td>Your organisation's Microsoft 365 storage</td><td>A folder on your own PC</td></tr>
+    <tr><th scope="row">External meetings</th><td>Depends on the other organisation's settings</td><td>Works the same in any meeting</td></tr>
+    <tr><th scope="row">Separate tracks for you and others</th><td>No</td><td>Yes: me.wav and them.wav</td></tr>
+    <tr><th scope="row">Cost</th><td>Included in some Microsoft 365 plans</td><td>Free</td></tr>
+  </tbody>
+</table></div>
+
+<p>When Teams records, everyone sees a recording notice. FreeCallNotes shows nothing in the meeting, so telling people is up to you.</p>
+
+<h2 id="listen-only-meetings-and-webinars">Listen-only meetings and webinars</h2>
+<p>For a town hall, training session or webinar where you only listen, open Options and untick <em>Record the user (microphone)</em>. FreeCallNotes then records only the system sound, so coughs and keyboard noise on your side stay out of the transcript.</p>
+
+<h2 id="where-your-recording-is-saved">Where your recording is saved</h2>
+<p>Each call gets its own folder named with the date and time, inside the <strong>Call Notes</strong> folder next to the app. Click <em>Saved calls</em> in FreeCallNotes to open it, or pick a different location in Options under <em>Save calls to</em>. Inside each call folder you'll find:</p>
+<ul>
+  <li><strong>me.wav</strong>: your microphone.</li>
+  <li><strong>them.wav</strong>: everyone else, as you heard them.</li>
+  <li><strong>The transcript</strong>, with timestamps and "User" and "System" labels.</li>
+  <li><strong>Transcript for AI</strong>: the transcript plus instructions for an AI assistant, in one text file.</li>
+</ul>
+<p>Nothing is uploaded. To delete a call, delete its folder. To remove FreeCallNotes completely, delete the app folder.</p>
+
+<h2 id="turn-the-transcript-into-meeting-notes">Turn the transcript into meeting notes</h2>
+<ol>
+  <li>After the call, click <strong>Show transcript for AI</strong>.</li>
+  <li>Drag the file into the AI assistant you're allowed to use, or paste its contents.</li>
+  <li>Send it. The instructions in the file ask for a summary, decisions, action items with owners, and open questions.</li>
+</ol>
+<p>Before you share the notes, check names, numbers and anything important against the transcript or the audio. Speech recognition gets most words right but not all of them.</p>
+
+<h2 id="getting-a-more-accurate-transcript">Getting a more accurate transcript</h2>
+<ul>
+  <li><strong>Use headphones and a decent microphone.</strong> This makes the biggest difference.</li>
+  <li><strong>Turn on the second pass.</strong> In Options, set Moonshine to run <em>After the call</em>. It transcribes the recording a second time, which can catch words the live transcript missed.</li>
+  <li><strong>Close other sound sources.</strong> The System track records everything you hear, so a video playing in another tab ends up in the transcript too.</li>
+</ul>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3>The "System" side of the transcript is empty</h3>
+<p>FreeCallNotes records whatever plays through your Windows default speakers or headphones. If Teams sends its sound to a different device, there's nothing for it to record. In Teams, open Settings &gt; Devices and choose the same speaker as your Windows default output, or change the Windows default to match Teams. Then check that you can hear the other people in the headphones you expect.</p>
+<h3>My own voice is missing</h3>
+<p>Check that the microphone you talk into is the Windows default microphone (Settings &gt; System &gt; Sound &gt; Input). Also check Settings &gt; Privacy &amp; security &gt; Microphone and make sure <em>Let desktop apps access your microphone</em> is on. In FreeCallNotes, open Options and make sure <em>Record the user (microphone)</em> is ticked.</p>
+<h3>Some lines are marked "echo from speakers"</h3>
+<p>That happens when the other people's voices come out of your speakers and your microphone hears them again. FreeCallNotes flags those lines so they don't get credited to you. Headphones stop it at the source.</p>
+<h3>The transcript lags or my PC feels slow during the call</h3>
+<p>Open Options and set NVIDIA Nemotron to <em>After the call</em>. FreeCallNotes then only records during the call, which uses very little of your computer, and transcribes once you press Stop.</p>
+<h3>The model download doesn't finish</h3>
+<p>The first-run download comes from Hugging Face. Some work networks and firewalls block it. Try a home network once; after that the model is stored in the app folder and no download is needed again.</p>
+<h3>The audio sounds muffled</h3>
+<p>Many Bluetooth headsets switch to a lower-quality "hands-free" mode while their microphone is in use, which affects the call itself as well as the recording. A wired or USB headset usually gives clearer audio and a better transcript.</p>
+
+<h2 id="consent-and-recording-at-work">Consent and recording at work</h2>
+<p>In many places everyone on a call has to agree before it's recorded, and the rules differ between countries and states. Tell people at the start, for example: "Is it OK if I record this call so I can take accurate notes? It stays on my computer." Keep a note of their answer.</p>
+<p>Many companies have rules about recording Teams calls. FreeCallNotes doesn't need admin rights, but that doesn't make it approved by your employer: follow your organisation's rules on recording and on which AI assistants you may use. FreeCallNotes is a tool, not legal advice.</p>
+
+  <h2 id="questions">Questions</h2>
   <h3>Does the other side know I'm recording?</h3>
-  <p>FreeCallNotes doesn't announce itself in Teams, so you need to tell people yourself and get their agreement before you record.</p>
+  <p>No. FreeCallNotes doesn't appear in the meeting, so you need to tell people yourself and get their agreement before you record.</p>
   <h3>Do I need a Teams licence or admin permission?</h3>
-  <p>No. FreeCallNotes records the audio on your own PC, so it doesn't depend on Teams recording features or on admin rights.</p>
+  <p>No. FreeCallNotes records the audio on your own PC, so it doesn't depend on Teams recording features, your licence or admin rights.</p>
+  <h3>Does it work with Teams on the web?</h3>
+  <p>Yes. It records what plays through your speakers or headphones, whether Teams runs in the app or in Edge or Chrome.</p>
+  <h3>Can I record a Teams meeting I'm not presenting in?</h3>
+  <p>Yes, as long as you can hear it on your PC. Consent rules still apply.</p>
+  <h3>Does it work with the free version of Teams?</h3>
+  <p>Yes. FreeCallNotes doesn't use Teams at all, so any version works.</p>
+  <h3>Can it tell the other speakers apart?</h3>
+  <p>Not yet. It separates you from everyone else. The AI assistant can often work out who's who from context.</p>
   <h3>Is it free?</h3>
   <p>Yes. It's free and open source under GPL-3.0, with no account and no limits.</p>
   <div class="cta">
@@ -62,7 +165,12 @@
     <a class="btn" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest/download/FreeCallNotes-1.4-windows-x64.zip">Download for Windows</a>
     <p class="consent">Tell people you're recording and get their agreement first.</p>
   </div>
-  <p class="note" style="margin-top:32px">More: <a href="/">FreeCallNotes home</a> &middot; <a href="/transcribe-zoom-calls-without-a-bot/">Transcribe Zoom calls without a bot joining the meeting</a> &middot; <a href="/free-offline-alternative-to-cloud-notetakers/">A free, offline alternative to cloud AI notetakers</a></p>
+  <h2 class="more">More guides</h2>
+  <ul class="more-list">
+    <li><a href="/transcribe-zoom-calls-without-a-bot/">Transcribe Zoom calls without a bot joining the meeting</a></li>
+    <li><a href="/record-google-meet-calls/">How to record and transcribe Google Meet calls on Windows</a></li>
+    <li><a href="/free-offline-alternative-to-cloud-notetakers/">A free, offline alternative to cloud AI notetakers</a></li>
+  </ul>
 </div></main>
 <footer><div class="wrap">
   <p>&copy; 2026 Nadir Khawaja &middot; Free and open-source software under GPL-3.0, provided as is with no warranty &middot; <a href="https://github.com/khawajamnadir-bot/freecallnotes">Source code</a> &middot; <a href="https://github.com/khawajamnadir-bot/freecallnotes/blob/main/DISCLAIMER.md">Disclaimer</a> &middot; <a href="https://github.com/khawajamnadir-bot/freecallnotes/blob/main/PRIVACY.md">Privacy</a></p>
