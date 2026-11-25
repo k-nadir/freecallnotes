@@ -3,16 +3,65 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FreeCallNotes: free call transcripts for Windows</title>
-<meta name="description" content="Free, open-source call transcripts for Windows. No installation: unzip, double-click and record. Transcribes both sides of any call on your own computer.">
+<title>FreeCallNotes: Free Call Recorder and Transcriber for Windows</title>
+<meta name="description" content="Free, open-source call recorder for Windows. Record and transcribe Zoom, Teams and Meet calls on your own computer. No installation, no account, no meeting bot.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://freecallnotes.com/">
-<meta property="og:title" content="FreeCallNotes: free call transcripts for Windows">
-<meta property="og:description" content="Records both sides of any call and transcribes it on your own computer. No account, no upload, no meeting bot.">
+<meta property="og:site_name" content="FreeCallNotes">
+<meta property="og:title" content="FreeCallNotes: Free. Open source. No installation.">
+<meta property="og:description" content="Free call recorder and transcriber for Windows. Records both sides of any call and transcribes it on your own computer. No account, no upload, no meeting bot.">
 <meta property="og:url" content="https://freecallnotes.com/">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://freecallnotes.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="FreeCallNotes: Free. Open source. No installation. Call transcripts for Windows.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FreeCallNotes: Free. Open source. No installation.">
+<meta name="twitter:description" content="Free call recorder and transcriber for Windows. Everything stays on your computer.">
+<meta name="twitter:image" content="https://freecallnotes.com/og.png">
 <meta name="theme-color" content="#131920">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://freecallnotes.com/#app",
+      "name": "FreeCallNotes",
+      "description": "Free, open-source call recorder and transcriber for Windows. Records your microphone and the other side of any call as separate tracks and transcribes them on your own computer with NVIDIA Nemotron, with optional Moonshine. No installation, no account, no uploads.",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "Call recording and transcription",
+      "operatingSystem": "Windows 10, Windows 11 (64-bit)",
+      "softwareVersion": "1.4",
+      "fileSize": "56MB",
+      "downloadUrl": "https://github.com/khawajamnadir-bot/freecallnotes/releases/latest/download/FreeCallNotes-1.4-windows-x64.zip",
+      "installUrl": "https://freecallnotes.com/#install",
+      "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+      "isAccessibleForFree": true,
+      "url": "https://freecallnotes.com/",
+      "image": "https://freecallnotes.com/og.png",
+      "sameAs": ["https://github.com/khawajamnadir-bot/freecallnotes"],
+      "author": { "@type": "Person", "name": "Nadir Khawaja" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": [
+        "Records microphone and system sound as two separate tracks",
+        "Live transcription on your own computer",
+        "Works with Zoom, Microsoft Teams, Google Meet, Webex and any app that plays through your speakers",
+        "No installation and no admin rights",
+        "Exports a Transcript for AI file for clean notes",
+        "English speech recognition"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://freecallnotes.com/#site",
+      "name": "FreeCallNotes",
+      "url": "https://freecallnotes.com/"
+    }
+  ]
+}
+</script>
 <style>
   :root {
     /* grounds */
@@ -202,7 +251,7 @@
   .close .ctas { margin-top: 0; }
   .btn--xl { height: 56px; padding: 0 32px; font-size: 17px; }
   @media (hover: hover) and (pointer: fine) { .btn--xl:hover { transform: translateY(-2px); } }
-  .directory { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--s-6); padding: var(--s-7) 0; border-top: 1px solid var(--line); }
+  .directory { display: grid; grid-template-columns: 1.6fr 1fr 1.2fr 1fr; gap: var(--s-6); padding: var(--s-7) 0; border-top: 1px solid var(--line); }
   .directory h3 { font: 500 13px/1 var(--body); color: var(--muted); margin-bottom: var(--s-3); }
   .directory ul { list-style: none; margin: 0; padding: 0; }
   .directory li a { display: inline-block; padding: 10px 0; text-decoration: none; }
@@ -320,9 +369,25 @@
 <div class="strip">
   <div class="wrap">
     <p>Works with any app that uses your microphone and speakers, including</p>
-    <ul><li>Zoom</li><li>Microsoft Teams</li><li>Google Meet</li><li>Slack</li><li>WhatsApp</li></ul>
+    <ul><li>Zoom</li><li>Microsoft Teams</li><li>Google Meet</li><li>Webex</li><li>Slack</li><li>WhatsApp</li></ul>
   </div>
 </div>
+
+<section id="about">
+  <div class="wrap split">
+    <div>
+      <h2>A free call recorder and transcriber for Windows.</h2>
+      <p class="lead">FreeCallNotes is an open-source desktop app that records your calls and turns them into text on your own PC. Use it for Zoom, Microsoft Teams, Google Meet or Webex meetings, sales and client calls, interviews, or any call you'd rather not take notes on by hand.</p>
+    </div>
+    <ul class="rows">
+      <li><h3>Record Zoom and Teams calls</h3><p>It captures your microphone and your computer's sound at the same time, so it records both sides of a call in any app, including calls in a browser tab, without changing your call settings.</p></li>
+      <li><h3>Transcription without the cloud</h3><p>Speech recognition runs locally with NVIDIA Nemotron, and optionally Moonshine. Your audio is never uploaded, and after the first model download it works offline.</p></li>
+      <li><h3>An AI notetaker without the bot</h3><p>Cloud notetakers join your meeting as an extra participant. FreeCallNotes runs quietly on your computer, and you hand the finished transcript to the AI assistant you're allowed to use.</p></li>
+      <li><h3>A free, private alternative to cloud notetakers</h3><p>No subscription, no account and no minutes limit. The source code is public under GPL-3.0, so anyone can check what it does.</p></li>
+      <li><h3>Portable, with no admin rights</h3><p>It's a folder, not an installer. Unzip it and run it, even on a PC where you can't install software. Follow your employer's policies on recording and AI tools.</p></li>
+    </ul>
+  </div>
+</section>
 
 <section id="how">
   <div class="wrap">
@@ -356,6 +421,7 @@
     <ul class="rows">
       <li><h3>Two separate tracks</h3><p>You and the other side are recorded apart, so the transcript always knows who said what.</p></li>
       <li><h3>Live transcript</h3><p>Words appear while you talk, so you can check what was just said without asking.</p></li>
+      <li><h3>Second opinion with Moonshine</h3><p>Switch on the optional Moonshine model in Options to re-transcribe the call afterwards for extra accuracy.</p></li>
       <li><h3>No meeting bot</h3><p>Nobody sees a notetaker join the call. It also works on phone calls routed through your PC.</p></li>
       <li><h3>Echo check</h3><p>If your speakers leak into your mic, the app flags the repeated lines in the transcript.</p></li>
       <li><h3>A file for your AI</h3><p>One file holds the transcript and a ready-written prompt, so the notes come out the same way every time.</p></li>
@@ -415,6 +481,12 @@
       <li><h3>How accurate is the transcript?</h3><p>It uses NVIDIA's Nemotron streaming speech model, with an optional second pass from Moonshine. Clear English on a headset comes out well. Crosstalk and noisy rooms lower accuracy, and the AI clean-up step fixes most small slips.</p></li>
       <li><h3>Why doesn't it write the summary?</h3><p>Keeping the summary in your own AI assistant keeps the app small, free and private, and you choose who sees your notes.</p></li>
       <li><h3>Where are recordings saved?</h3><p>In a "Call Notes" folder next to the app, one dated folder per call. You can change the location in Options.</p></li>
+      <li><h3>Does it work offline?</h3><p>Yes, after the first run. The speech model downloads once, about 660&nbsp;MB, and from then on recording and transcription work without the internet.</p></li>
+      <li><h3>Can my company use it?</h3><p>Yes, it's free for work use too. It needs no installation or admin rights, but follow your employer's policies on recording calls and using AI tools. Some company laptops block unsigned programs or downloads from Hugging Face, so check with IT if it won't start.</p></li>
+      <li><h3>Does it tell speakers apart?</h3><p>It separates you from the other side, because they're recorded on separate tracks. It doesn't yet tell the other people on the call apart from each other.</p></li>
+      <li><h3>Is my data used for training?</h3><p>No. Nothing leaves your computer, so there's nothing to train on.</p></li>
+      <li><h3>Can it record a phone call?</h3><p>Only if the call's sound plays through your computer, such as a softphone, a desktop app or a phone linked to your PC. It can't hear a call on a separate handset.</p></li>
+      <li><h3>How do I uninstall it?</h3><p>Close it and delete the folder, plus the desktop shortcut if you like. There's nothing else to remove.</p></li>
     </ul>
   </div>
 </section>
@@ -444,6 +516,14 @@
         </ul>
       </div>
       <div>
+        <h3>Guides</h3>
+        <ul>
+          <li><a href="/record-teams-calls/">Record Teams calls</a></li>
+          <li><a href="/transcribe-zoom-calls-without-a-bot/">Transcribe Zoom without a bot</a></li>
+          <li><a href="/free-offline-alternative-to-cloud-notetakers/">Offline alternative to cloud notetakers</a></li>
+        </ul>
+      </div>
+      <div>
         <h3>Legal</h3>
         <ul>
           <li><a href="https://github.com/khawajamnadir-bot/freecallnotes/blob/main/LICENSE">License (GPL-3.0)</a></li>
@@ -456,7 +536,7 @@
     <div class="legal">
       <span>© <span id="year">2026</span> Nadir Khawaja · Free and open-source software under GPL-3.0, provided as is with no warranty · no cookies or trackers on this site</span>
       <span>Nemotron model licensed by NVIDIA Corporation under the NVIDIA Open Model License. Speech recognition via sherpa-onnx and Moonshine.</span>
-      <span>FreeCallNotes is independent and not affiliated with NVIDIA, Microsoft, Zoom, Google, Slack or Meta. Product names are trademarks of their owners.</span>
+      <span>FreeCallNotes is independent and not affiliated with NVIDIA, Microsoft, Zoom, Google, Cisco, Slack or Meta. Product names are trademarks of their owners.</span>
     </div>
   </div>
 </footer>

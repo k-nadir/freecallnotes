@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://freecallnotes.com/sitemap.xml
