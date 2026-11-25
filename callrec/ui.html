@@ -513,6 +513,7 @@ function setState(s, extra) {
   state = s;
   info = Object.assign({}, info, extra || {});
   if (s === 'recording' && was !== 'recording') { lines = []; partial = { me: '', them: '' }; }
+  if (s === 'idle' && was === 'done') { lines = []; jobs = []; info = Object.assign({}, extra || {}); $('timer').textContent = '00:00'; }  // fresh start
   if (s !== 'recording') { $('barMe').style.width = '0%'; $('barThem').style.width = '0%'; partial = { me: '', them: '' }; }
   if (extra && extra.devices) { $('devMe').textContent = extra.devices.me || 'Not recording'; $('devThem').textContent = extra.devices.them || 'Not recording'; }
   if (extra && extra.pending !== undefined) pendingCount = extra.pending;

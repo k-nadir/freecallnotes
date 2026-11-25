@@ -117,6 +117,11 @@ def main():
         except Exception:
             logging.getLogger("callrec").exception("version check")
         if not replaced:
+            try:      # opening the app again starts on a clean screen (unless a call is in progress)
+                req = urllib.request.Request(f"http://127.0.0.1:{args.port}/api/fresh", data=b"{}", method="POST")
+                urllib.request.urlopen(req, timeout=2).read()
+            except Exception:
+                logging.getLogger("callrec").exception("fresh start")
             if not args.no_window:
                 open_window(url)
             return

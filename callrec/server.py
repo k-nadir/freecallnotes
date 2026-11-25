@@ -340,6 +340,16 @@ class App:
     def busy(self):
         return self.state in ("recording", "stopping", "processing", "exporting", "catching_up")
 
+    def fresh_start(self):
+        """The app was opened again: clear the last call off the screen (it stays in Saved calls)."""
+        if self.state not in ("idle", "done"):
+            return {"ok": False}
+        self.lines = []
+        self.last_result = None
+        self.info = {}
+        self.set_state("idle", pending=len(self.pending_calls()))
+        return {"ok": True}
+
 
 def open_path(path, select=False):
     if sys.platform == "win32":
@@ -391,7 +401,7 @@ def make_handler(app):
                     self.wfile.flush()
                     while True:
                         try:
-                            ev = q.get(timeout=15)
+                            ev = q.get(timeout=2)   # short ping, so a closed window is noticed quickly
                             self.wfile.write(f"data: {json.dumps(ev)}\n\n".encode())
                         except queue.Empty:
                             self.wfile.write(b": ping\n\n")
@@ -431,6 +441,8 @@ def make_handler(app):
                     self._json(app.set_folder(None))
                 elif self.path == "/api/finish_pending":
                     self._json(app.finish_pending())
+                elif self.path == "/api/fresh":
+                    self._json(app.fresh_start())
                 elif self.path == "/api/finish_in_background":
                     self._json(app.finish_in_background())
                 elif self.path == "/api/open":
