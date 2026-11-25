@@ -111,6 +111,8 @@
   .hero .lead strong { color: var(--ink); font-weight: 600; }
   h1.big { font-size: clamp(44px, 4.4vw + 14px, 80px); line-height: 1.02; letter-spacing: -.02em; }
   h1.big .mask:nth-child(2) > span { color: var(--primary); }
+  .tagline { margin-top: var(--s-5); font: 600 clamp(20px, .8vw + 14px, 26px)/1.3 var(--display); color: var(--ink); max-width: none; }
+  .tagline span { color: var(--primary); }
   [data-motion] .mask:nth-child(3) > span { animation-delay: 160ms; }
   .ctas { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-6); }
   .facts { margin-top: var(--s-5); color: var(--muted); font-size: var(--t-small); }
@@ -279,7 +281,8 @@
         <span class="mask"><span>Open source.</span></span>
         <span class="mask"><span>No installation.</span></span>
       </h1>
-      <p class="lead fade d1"><strong>Call transcripts for Windows, plug and play:</strong> unzip, double-click, press Record. FreeCallNotes records both sides of any call and turns it into a transcript on your own computer. No bot joins your call, no account, nothing uploaded.</p>
+      <p class="tagline fade d1">Download it. Double-click it. Start recording. <span>That's it.</span></p>
+      <p class="lead fade d1">Call transcripts for Windows. FreeCallNotes records both sides of any call and turns it into a transcript on your own computer. No bot joins your call, no account, nothing uploaded.</p>
       <div class="ctas fade d2">
         <a class="btn btn--primary" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest/download/FreeCallNotes-1.4-windows-x64.zip">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 19h16"/></svg>
