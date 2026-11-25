@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 APP_NAME = "FreeCallNotes"
-VERSION = "1.4"
+VERSION = "1.4.1"
 # Portable mode: by default calls are saved in a "Call Notes" folder inside the app folder, so the
 # whole app (and everything it records) lives in one folder that can be moved or deleted.
 # Set to False to default to Documents\Call Notes instead. Users can pick any folder in Options.
