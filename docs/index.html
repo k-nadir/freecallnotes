@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-motion>
 <head>
 <meta charset="utf-8">
@@ -24,7 +24,10 @@
     --ink: #eef1f5;
     --muted: #a7b2c1;           /* labels, meta, grey second halves */
     --line: rgba(238,241,245,.13);
-    /* one accent */
+    /* primary action: the brand's user blue */
+    --primary: #9db8ff;
+    --primary-ink: #10151c;
+    /* amber: recording / on air only */
     --accent: #f2a93b;
     --accent-ink: #1a1206;
     /* app-mock signal colours (UI only) */
@@ -60,7 +63,7 @@
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--g-main); color: var(--ink); font: var(--t-body)/1.6 var(--body); -webkit-font-smoothing: antialiased; overflow-x: hidden; hyphens: auto; }
   a { color: inherit; }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 4px; }
   h1, h2, h3 { font-family: var(--display); font-weight: 600; margin: 0; hyphens: manual; text-wrap: balance; }
   h1 { font-size: var(--t-h1); line-height: 1.04; letter-spacing: -.015em; }
   h2 { font-size: var(--t-h2); line-height: 1.1; letter-spacing: -.01em; }
@@ -87,16 +90,18 @@
          font: 600 16px/1 var(--body); text-decoration: none; white-space: nowrap;
          transition: transform var(--m-out) var(--ease), background-color var(--m-out) var(--ease), border-color var(--m-out) var(--ease); }
   .btn svg { width: 18px; height: 18px; flex: none; }
-  .btn--primary { background: var(--accent); color: var(--accent-ink); }
+  .btn--primary { background: var(--primary); color: var(--primary-ink); }
   .btn--secondary { border: 1px solid rgba(238,241,245,.28); color: var(--ink); }
   .nav .btn { height: 44px; }
   @media (hover: hover) and (pointer: fine) {
     .btn:hover { transform: translateY(-1px); transition-duration: var(--m-in); }
-    .btn--primary:hover { background: color-mix(in oklab, var(--accent), var(--g-main) 14%); }
+    .btn--primary:hover { background: color-mix(in oklab, var(--primary), var(--g-main) 14%); }
     .btn--secondary:hover { border-color: rgba(238,241,245,.5); background: rgba(238,241,245,.04); }
     .btn:active { transform: translateY(1px) scale(.985); transition-duration: var(--m-press); }
   }
-  .link { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .consent { margin-top: var(--s-3); color: var(--muted); font-size: var(--t-small); }
+  .close .consent { margin-top: var(--s-2); }
+  .link { color: var(--primary); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
   .link:hover { text-decoration-thickness: 2px; }
 
   /* ---------- hero ---------- */
@@ -109,7 +114,11 @@
   /* app mock: the product's real UI, in one frame */
   .app { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; font-size: 14px; position: relative; }
   .app .bar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--line); }
-  .app .bar b { font: 600 14px/1 var(--display); color: var(--muted); }
+  .app .bar b { font: 600 14px/1 var(--display); color: var(--muted); display: inline-flex; align-items: center; gap: 8px; }
+  .app .bar b img { width: 20px; height: 20px; }
+  .brand img.mark { width: 28px; height: 28px; }
+  .legal { flex-direction: column; }
+  .legal a { color: var(--muted); }
   .app .body { padding: 20px; }
   .onair { display: flex; align-items: center; gap: 10px; }
   .onair .rec { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(242,169,59,.22); }
@@ -149,7 +158,7 @@
   /* ---------- steps ---------- */
   .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); }
   .step { border-top: 2px solid var(--line); padding-top: var(--s-5); }
-  .step:first-child { border-top-color: var(--accent); }
+  .step:first-child { border-top-color: var(--primary); }
   .step h3 { margin-bottom: var(--s-3); }
   .step p { color: var(--ink); opacity: .9; }
 
@@ -166,7 +175,7 @@
   .ledger li { display: flex; align-items: baseline; gap: var(--s-4); padding: var(--s-4) 0; border-bottom: 1px solid var(--line); }
   .ledger li span small { display: block; color: var(--muted); font-size: var(--t-small); }
   .ledger li b { margin-left: auto; font: 500 13px/1 var(--body); white-space: nowrap; color: var(--ok); }
-  .ledger li b.once { color: var(--accent); }
+  .ledger li b.once { color: var(--muted); }
 
   /* ---------- install ---------- */
   .req { list-style: none; margin: var(--s-6) 0 0; padding: 0; border-top: 1px solid var(--line); }
@@ -191,7 +200,7 @@
   .directory h3 { font: 500 13px/1 var(--body); color: var(--muted); margin-bottom: var(--s-3); }
   .directory ul { list-style: none; margin: 0; padding: 0; }
   .directory li a { display: inline-block; padding: 10px 0; text-decoration: none; }
-  .directory li a:hover { color: var(--accent); }
+  .directory li a:hover { color: var(--primary); }
   .directory p { color: var(--muted); }
   .legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-3); padding: var(--s-5) 0 var(--s-7); border-top: 1px solid var(--line); color: var(--muted); font-size: var(--t-label); }
 
@@ -230,19 +239,18 @@
     .line { grid-template-columns: 1fr; gap: 2px; }
     .mbar { display: block; position: fixed; inset: auto 0 0; z-index: 10; padding: 12px 24px calc(12px + env(safe-area-inset-bottom)); background: var(--g-main); border-top: 1px solid var(--line); }
     .mbar .btn { width: 100%; }
-    body { padding-bottom: 72px; }
+    body { padding-bottom: 104px; }
+    .mbar .consent { margin: 6px 0 0; font-size: 13px; text-align: center; max-width: none; }
     .close { padding-top: var(--padt); }
   }
 </style>
 </head>
 <body>
 
-<!-- Replace khawajamnadir-bot/freecallnotes with your GitHub repo everywhere on this page (see SETUP.md). -->
-
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="#top" aria-label="FreeCallNotes home">
-      <svg class="mark" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="4.5" fill="#f2a93b"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#f2a93b" stroke-opacity=".4" stroke-width="1.6"/></svg>
+      <img class="mark" src="favicon.svg" alt="" width="28" height="28">
       FreeCallNotes
     </a>
     <nav class="navlinks" aria-label="Sections">
@@ -274,11 +282,12 @@
         </a>
         <a class="btn btn--secondary" href="#how">See the three steps</a>
       </div>
-      <p class="facts fade d3">Windows 10 and 11 Â· free Â· about 1&nbsp;GB on disk with the speech model</p>
+      <p class="consent fade d2">Tell people you're recording and get their agreement first.</p>
+      <p class="facts fade d3">Windows 10 and 11, 64-bit · free · 56&nbsp;MB download plus a one-time 660&nbsp;MB speech model</p>
     </div>
 
     <div class="app settle" role="img" aria-label="The FreeCallNotes window during a call, showing your voice and the other side transcribed live">
-      <div class="bar"><b>Call Recorder</b><b style="font-weight:500">Options</b></div>
+      <div class="bar"><b><img src="logo.svg" alt="" width="20" height="20">FreeCallNotes</b><b style="font-weight:500">Options</b></div>
       <div class="body">
         <div class="onair"><span class="rec"></span><h3>Recording</h3><time id="clock">00:12:47</time></div>
         <p class="sub">Microphone and computer sound, transcribed as you talk</p>
@@ -324,7 +333,7 @@
       </div>
       <div class="step">
         <h3>Paste into your AI</h3>
-        <p>Drop the "Transcript for AI" file into ChatGPT, Claude or Gemini. It includes the prompt for cleaning up the transcript and writing your notes.</p>
+        <p>Drop the "Transcript for AI" file into your AI assistant. It includes the prompt for cleaning up the transcript and writing your notes.</p>
       </div>
     </div>
   </div>
@@ -359,7 +368,7 @@
       <li><span>Your transcripts<small>Plain text in your own folder</small></span><b>Stays on your PC</b></li>
       <li><span>An account or email<small>There isn't one to make</small></span><b>Never asked for</b></li>
       <li><span>Usage tracking<small>No analytics in the app or on this site</small></span><b>None</b></li>
-      <li><span>Speech model<small>Downloaded from Hugging Face on first run</small></span><b class="once">Once, about 670&nbsp;MB</b></li>
+      <li><span>Speech model<small>Nemotron downloads from Hugging Face on first run. The optional Moonshine model downloads from download.moonshine.ai.</small></span><b class="once">Once, about 660&nbsp;MB</b></li>
     </ul>
   </div>
 </section>
@@ -367,20 +376,21 @@
 <section id="install">
   <div class="wrap split">
     <div>
-      <h2>Install in four steps.</h2>
+      <h2>Install in five steps.</h2>
       <p class="lead">There's no installer and no admin rights needed. Unzip the folder anywhere and run it. To remove it, delete the folder.</p>
       <ul class="req">
-        <li><span>System</span><span>Windows 10 or 11</span></li>
-        <li><span>Disk space</span><span>About 1&nbsp;GB</span></li>
+        <li><span>System</span><span>Windows 10 or 11, 64-bit</span></li>
+        <li><span>Disk space</span><span>About 2&nbsp;GB, plus about 230&nbsp;MB per hour of recording</span></li>
         <li><span>Internet</span><span>First run only</span></li>
         <li><span>Language</span><span>English</span></li>
         <li><span>Price</span><span>Free</span></li>
       </ul>
     </div>
     <ol class="how">
-      <li><h3>Download and unzip</h3><p>Get the latest <a class="link" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest">release from GitHub</a> and extract it anywhere, such as your Documents folder.</p></li>
-      <li><h3>Open "Start Call Recorder"</h3><p>If Windows shows "Windows protected your PC", click <kbd>More info</kbd> and then <kbd>Run anyway</kbd>. The warning appears because the app is new and not code-signed.</p></li>
-      <li><h3>Wait for "Ready to record"</h3><p>The first run downloads the speech model, about 670&nbsp;MB, once. It also adds a desktop shortcut for next time.</p></li>
+      <li><h3>Download and unzip</h3><p>Get the latest <a class="link" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest">release from GitHub</a> and extract it anywhere, such as your Documents folder. Always tell people you're recording and get their consent. You're responsible for following local law.</p></li>
+      <li><h3>Double-click FreeCallNotes (FreeCallNotes.exe)</h3><p>If Windows shows "Windows protected your PC", click <kbd>More info</kbd> and then <kbd>Run anyway</kbd>. The warning appears because the app is new and not code-signed.</p></li>
+      <li><h3>Accept the "Before you record" notice</h3><p>On first run, read and accept the short Before you record notice. It covers consent, accuracy and using AI assistants, and you can reopen it from Options.</p></li>
+      <li><h3>Wait for "Ready to record"</h3><p>The first run downloads the speech model, about 660&nbsp;MB, once. It also adds a desktop shortcut for next time.</p></li>
       <li><h3>Put on headphones</h3><p>Headphones stop your mic from picking up the other side through your speakers, which keeps the transcript clean.</p></li>
     </ol>
   </div>
@@ -390,7 +400,7 @@
   <div class="wrap">
     <div class="head"><h2>Questions about FreeCallNotes.</h2></div>
     <ul class="rows faq">
-      <li><h3>Is it really free?</h3><p>Yes. There's no trial, no paid tier and no account. All the work happens on your computer, so there are no server costs to pass on.</p></li>
+      <li><h3>Is it really free?</h3><p>Yes. It's free and open source, with no account, no subscription and no limits. All the work happens on your computer. Donations may be added later, and this release stays free whatever happens.</p></li>
       <li><h3>Does it work on Mac or Linux?</h3><p>Not yet. It uses a Windows audio feature to capture your computer's sound. If you'd like to help bring it to other systems, the code is on GitHub.</p></li>
       <li><h3>Which call apps does it work with?</h3><p>Any of them. It records your default microphone and whatever plays through your default speakers or headphones, in shared mode, so your call app keeps working as normal.</p></li>
       <li><h3>Do I need to tell people I'm recording?</h3><p>Yes. The app doesn't announce itself, and recording laws in many countries and states require everyone on the call to agree. Ask first, and keep recordings only as long as you need them.</p></li>
@@ -409,12 +419,13 @@
       <h2>Record your next call for free.</h2>
       <div class="ctas">
         <a class="btn btn--primary btn--xl" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest">Download for Windows</a>
+        <p class="consent">Tell people you're recording and get their agreement first.</p>
       </div>
     </div>
     <div class="directory">
       <div>
         <h3>About</h3>
-        <p>FreeCallNotes is open-source software, provided as is. You're responsible for getting consent before you record a call.</p>
+        <p>Free and open-source software under GPL-3.0, provided as is with no warranty. You're responsible for getting consent before you record a call.</p>
       </div>
       <div>
         <h3>Project</h3>
@@ -425,22 +436,24 @@
         </ul>
       </div>
       <div>
-        <h3>This page</h3>
+        <h3>Legal</h3>
         <ul>
-          <li><a href="#how">Steps</a></li>
-          <li><a href="#privacy">Privacy</a></li>
-          <li><a href="#faq">Questions</a></li>
+          <li><a href="https://github.com/khawajamnadir-bot/freecallnotes/blob/main/LICENSE">License (GPL-3.0)</a></li>
+          <li><a href="https://github.com/khawajamnadir-bot/freecallnotes/blob/main/DISCLAIMER.md">Disclaimer</a></li>
+          <li><a href="https://github.com/khawajamnadir-bot/freecallnotes/blob/main/PRIVACY.md">Privacy</a></li>
+          <li><a href="https://github.com/khawajamnadir-bot/freecallnotes/blob/main/THIRD_PARTY_NOTICES.md">Third-party notices</a></li>
         </ul>
       </div>
     </div>
     <div class="legal">
-      <span>Â© <span id="year">2026</span> FreeCallNotes Â· no cookies or trackers on this site</span>
-      <span>Speech recognition by NVIDIA Nemotron and Moonshine via sherpa-onnx. Product names are trademarks of their owners.</span>
+      <span>© <span id="year">2026</span> Nadir Khawaja · Free and open-source software under GPL-3.0, provided as is with no warranty · no cookies or trackers on this site</span>
+      <span>Nemotron model licensed by NVIDIA Corporation under the NVIDIA Open Model License. Speech recognition via sherpa-onnx and Moonshine.</span>
+      <span>FreeCallNotes is independent and not affiliated with NVIDIA, Microsoft, Zoom, Google, Slack or Meta. Product names are trademarks of their owners.</span>
     </div>
   </div>
 </footer>
 
-<div class="mbar"><a class="btn btn--primary" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest">Download for Windows</a></div>
+<div class="mbar"><a class="btn btn--primary" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest">Download for Windows</a><p class="consent">Tell people you're recording and get their agreement first.</p></div>
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
