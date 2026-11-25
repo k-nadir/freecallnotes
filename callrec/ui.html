@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<!-- FreeCallNotes. Copyright (C) 2026 Nadir Khawaja. SPDX-License-Identifier: GPL-3.0-or-later -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FreeCallNotes</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<style>
+  :root {
+    --ink: #141a22;        /* window */
+    --panel: #1b2330;      /* raised surfaces */
+    --panel-2: #212b3a;
+    --line: #2b3646;
+    --text: #e6eaf0;
+    --muted: #8a97a8;
+    --faint: #5d6a7c;
+    --amber: #f2a93b;      /* on air */
+    --user: #9db8ff;
+    --system: #4fb3bf;
+    --ok: #7bc59a;
+    --err: #e5735f;
+    --display: "Bahnschrift", "DIN Alternate", "Segoe UI Variable Display", "Segoe UI", sans-serif;
+    --body: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--ink); color: var(--text); font: 14px/1.5 var(--body); display: flex; flex-direction: column;
+         -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--user); outline-offset: 2px; }
+  .hidden { display: none !important; }
+
+  /* ---------- header ---------- */
+  header { display: flex; align-items: center; gap: 6px; padding: 14px 20px 4px; }
+  header h1 { font: 600 17px/1 var(--display); letter-spacing: .02em; margin: 0 auto 0 0; display: flex; align-items: center; gap: 10px; }
+  header h1 .logo { display: inline-flex; }
+  .ghost { background: none; border: 1px solid transparent; border-radius: 6px; padding: 5px 10px; color: var(--muted); cursor: pointer; font-size: 13px; }
+  .ghost:hover { color: #fff; border-color: var(--line); }
+  .ghost.icon { display: inline-flex; align-items: center; gap: 7px; color: var(--text); }
+  .ghost.icon svg { color: #fff; flex: none; }
+
+  main { flex: 1; display: flex; flex-direction: column; min-height: 0; padding: 6px 20px 18px; gap: 14px; }
+
+  /* ---------- signal chain: the status rail ---------- */
+  .status { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px 14px; }
+  .rail { list-style: none; margin: 0 0 14px; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); position: relative; }
+  .rail::before { content: ""; position: absolute; left: 10%; right: 10%; top: 7px; height: 2px; background: var(--line); }
+  .rail .fill { position: absolute; left: 10%; top: 7px; height: 2px; background: var(--muted); width: 0; transition: width .5s ease; }
+  .rail li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; font: 500 11.5px/1 var(--display);
+             letter-spacing: .03em; color: var(--faint); }
+  .rail .dot { width: 16px; height: 16px; border-radius: 50%; background: var(--ink); border: 2px solid var(--line); position: relative; z-index: 1; }
+  .rail li.past { color: var(--muted); }
+  .rail li.past .dot { background: var(--muted); border-color: var(--muted); }
+  .rail li.now { color: var(--text); }
+  .rail li.now .dot { border-color: var(--text); background: var(--text); box-shadow: 0 0 0 4px rgba(230,234,240,.12); }
+  .rail li.now.rec .dot { background: var(--amber); border-color: var(--amber); box-shadow: 0 0 0 5px rgba(242,169,59,.22); animation: onair 1.6s ease-in-out infinite; }
+  .rail li.now.rec { color: var(--amber); }
+  .rail li.now.work .dot { background: var(--ink); border-color: var(--user); border-top-color: transparent; animation: spin 1s linear infinite; box-shadow: none; }
+  .rail li.now.work { color: var(--user); }
+  .rail li.now.ok .dot { background: var(--ok); border-color: var(--ok); box-shadow: 0 0 0 4px rgba(123,197,154,.18); }
+  .rail li.now.ok { color: var(--ok); }
+  .rail li.now.bad .dot { background: var(--err); border-color: var(--err); }
+  @keyframes onair { 50% { box-shadow: 0 0 0 9px rgba(242,169,59,.06); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .headline { font: 600 22px/1.2 var(--display); margin: 0; }
+  .detail { color: var(--muted); margin: 4px 0 0; min-height: 21px; }
+  .warnline { color: var(--amber); font-size: 13px; margin-top: 6px; }
+  .errline { color: var(--err); font-size: 13px; margin-top: 6px; }
+  .noteline { color: var(--ok); font-size: 13px; margin-top: 6px; }
+
+  .models { margin-top: 12px; display: grid; gap: 8px; }
+  .model { display: grid; grid-template-columns: 96px 1fr auto; align-items: center; gap: 10px; font-size: 13px; }
+  .model .name { font: 500 13px/1 var(--display); letter-spacing: .02em; }
+  .model .what { color: var(--muted); }
+  .model .state { color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+  .model .state.live { color: var(--amber); }
+  .model .state.done { color: var(--ok); }
+  .model .state.failed { color: var(--err); }
+  .model .bar { grid-column: 2 / 4; height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; margin-top: -4px; }
+  .model .bar > div { height: 100%; background: var(--user); width: 0; transition: width .4s ease; }
+
+  .bgrow { margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+  /* ---------- console ---------- */
+  .console { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; padding: 2px 4px; }
+  #btn { width: 92px; height: 92px; border-radius: 50%; border: 2px solid var(--line); background: var(--panel); cursor: pointer;
+         display: grid; place-items: center; transition: transform .08s, border-color .2s; }
+  #btn:active { transform: scale(.97); }
+  #btn .glyph { width: 34px; height: 34px; border-radius: 50%; background: var(--amber); transition: all .2s; }
+  #btn.stop { border-color: var(--amber); }
+  #btn.stop .glyph { width: 26px; height: 26px; border-radius: 5px; background: var(--text); }
+  #btn:disabled { cursor: default; opacity: .45; }
+  #btn:disabled .glyph { background: var(--faint); }
+  .btnlabel { display: block; text-align: center; font: 500 12px/1 var(--display); letter-spacing: .04em; color: var(--muted); margin-top: 8px; }
+  .readout { display: flex; flex-direction: column; gap: 10px; }
+  #timer { font: 400 40px/1 var(--display); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+  #timer.live { color: var(--amber); }
+  .meter { display: grid; grid-template-columns: 58px 1fr; align-items: center; gap: 10px; font-size: 12.5px; }
+  .meter .who { font: 500 12.5px/1 var(--display); letter-spacing: .02em; }
+  .meter .who.user { color: var(--user); } .meter .who.system { color: var(--system); }
+  .meter .track { height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
+  .meter .track > div { height: 100%; width: 0; border-radius: 3px; transition: width .1s linear; }
+  #barMe { background: var(--user); } #barThem { background: var(--system); }
+  .meter .dev { grid-column: 2; color: var(--faint); font-size: 11.5px; margin-top: -6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ---------- saved ---------- */
+  .saved { background: var(--panel); border: 1px solid rgba(123,197,154,.35); border-radius: 14px; padding: 12px 18px 12px; }
+  .saved .path { color: var(--muted); font-size: 12px; word-break: break-all; margin: 2px 0 8px; }
+  .savedtitle { font: 600 15px/1.2 var(--display); color: var(--ok); }
+  .saved .files { margin: 0 0 10px; display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; }
+  .saved .files span { background: var(--panel-2); border: 1px solid var(--line); border-radius: 5px; padding: 2px 8px; color: var(--text); }
+  .saved .hint { margin-top: 8px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .primary { background: var(--user); color: #0f1622; border: none; border-radius: 8px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+  .secondary { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 7px 13px; color: var(--text); cursor: pointer; }
+  .secondary:hover { border-color: var(--muted); }
+  .primary:disabled { opacity: .4; cursor: default; }
+  .hint { color: var(--muted); font-size: 12.5px; margin-top: 10px; }
+
+  /* ---------- transcript ---------- */
+  .transcript { flex: 1; min-height: 140px; display: flex; flex-direction: column; border-top: 1px solid var(--line); padding-top: 10px; }
+  .transcript h2 { font: 500 13px/1 var(--display); letter-spacing: .03em; color: var(--muted); margin: 0 0 8px; }
+  #transcript { flex: 1; overflow-y: auto; padding-right: 6px; }
+  .ln { display: grid; grid-template-columns: 52px 54px 1fr; gap: 8px; padding: 5px 0; font-size: 13.5px; }
+  .ln .ts { color: var(--faint); font-variant-numeric: tabular-nums; font-size: 12px; padding-top: 1px; }
+  .ln .who { font: 500 12.5px/1.6 var(--display); }
+  .ln .who.me { color: var(--user); } .ln .who.them { color: var(--system); }
+  .ln.echo { opacity: .4; }
+  .ln .tag { color: var(--faint); font-size: 11.5px; margin-left: 6px; }
+  .ln.partial .txt { color: var(--muted); font-style: italic; }
+  .empty { color: var(--faint); font-size: 13px; padding: 8px 0; }
+
+  /* ---------- first run ---------- */
+  .setup .row { display: grid; grid-template-columns: 120px 1fr 42px; gap: 10px; align-items: center; font-size: 13px; margin-top: 10px; }
+  .setup .track { height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
+  .setup .track > div { height: 100%; width: 0; background: var(--user); transition: width .3s; }
+
+  /* ---------- options drawer ---------- */
+  .scrim { position: fixed; inset: 0; background: rgba(8,11,15,.55); z-index: 10; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 92vw); background: var(--panel); border-left: 1px solid var(--line);
+            padding: 18px 20px; overflow-y: auto; transform: translateX(100%); transition: transform .22s ease; z-index: 11; }
+  .drawer.open { transform: none; }
+  .drawer h2 { font: 600 17px/1 var(--display); margin: 0 0 4px; }
+  .drawer p { color: var(--muted); margin: 0 0 14px; font-size: 13px; }
+  table.opt { border-collapse: collapse; width: 100%; font-size: 13px; }
+  table.opt th { font: 500 12px/1.3 var(--display); letter-spacing: .02em; color: var(--muted); text-align: center; padding: 6px 4px 8px; vertical-align: bottom; }
+  table.opt td { border-top: 1px solid var(--line); padding: 10px 4px; text-align: center; }
+  table.opt td:first-child, table.opt th:first-child { text-align: left; }
+  table.opt input { accent-color: var(--user); width: 16px; height: 16px; }
+  table.opt input:disabled { opacity: .3; }
+  .drawer .sources { margin-top: 18px; display: grid; gap: 8px; font-size: 13px; }
+  .drawer .sources input { accent-color: var(--user); margin-right: 8px; }
+  .drawer .close { float: right; }
+  .folderset { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .folderset .flabel { font: 500 13px/1 var(--display); letter-spacing: .02em; margin-bottom: 6px; }
+  .folderset .fpath { color: var(--muted); font-size: 12.5px; word-break: break-all; margin-bottom: 10px; }
+
+  /* ---------- first-run notice ---------- */
+  .modal { position: fixed; inset: 0; display: grid; place-items: center; z-index: 20; background: rgba(8,11,15,.72); padding: 16px; }
+  .modal .box { width: min(480px, 100%); max-height: 100%; overflow-y: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
+  .modal h2 { font: 600 19px/1.2 var(--display); margin: 0 0 12px; }
+  .modal dl { margin: 0 0 16px; }
+  .modal dt { font: 600 13.5px/1.3 var(--display); letter-spacing: .02em; margin-top: 12px; }
+  .modal dd { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+  .modal .actions { justify-content: flex-end; }
+  .about { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+  .about .flabel { font: 500 13px/1 var(--display); letter-spacing: .02em; margin-bottom: 6px; color: var(--text); }
+  .about p { margin: 0 0 8px; }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="logo"><svg width="24" height="24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#141A22"/>
+  <g fill="#9DB8FF"><rect x="5" y="8" width="3" height="8" rx="1.5"/><rect x="10" y="6" width="3" height="12" rx="1.5"/><rect x="15" y="10.5" width="12" height="3" rx="1.5"/></g>
+  <g fill="#4FB3BF"><rect x="5" y="18" width="3" height="7" rx="1.5"/><rect x="10" y="16.5" width="3" height="10" rx="1.5"/><rect x="15" y="20" width="7" height="3" rx="1.5"/></g>
+  <circle cx="25.5" cy="21.5" r="2.3" fill="#F2A93B"/>
+</svg>
+</span>FreeCallNotes</h1>
+  <button class="ghost icon" onclick="post('/api/open',{what:'all'})"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M1.75 4.25a1 1 0 0 1 1-1h3.1l1.5 1.6h5.9a1 1 0 0 1 1 1v6.9a1 1 0 0 1-1 1H2.75a1 1 0 0 1-1-1z"/></svg>Saved calls</button>
+  <button class="ghost icon" id="optBtn" onclick="openOptions(true)"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M2 4h7M12 4h2M2 8h2M7 8h7M2 12h8M13 12h1"/><circle cx="10.5" cy="4" r="1.5"/><circle cx="5.5" cy="8" r="1.5"/><circle cx="11.5" cy="12" r="1.5"/></svg>Options</button>
+</header>
+
+<main>
+  <!-- where things are: always visible -->
+  <section class="status" aria-live="polite">
+    <ol class="rail" id="rail">
+      <div class="fill" id="railFill"></div>
+      <li data-step="0"><span class="dot"></span>Ready</li>
+      <li data-step="1"><span class="dot"></span>Recording</li>
+      <li data-step="2"><span class="dot"></span>Saving</li>
+      <li data-step="3"><span class="dot"></span>Transcribing</li>
+      <li data-step="4"><span class="dot"></span>Saved</li>
+    </ol>
+    <p class="headline" id="headline">Starting up</p>
+    <p class="detail" id="detail"></p>
+    <div class="models" id="models"></div>
+    <div class="warnline hidden" id="warn"></div>
+    <div class="errline hidden" id="err"></div>
+    <div class="noteline hidden" id="note"></div>
+    <div class="bgrow hidden" id="bgRow">
+      <button class="secondary" id="btnBg" onclick="finishInBackground()">Finish in background and close</button>
+    </div>
+    <div class="bgrow hidden" id="pendingRow">
+      <span class="detail" id="pendingText" style="margin:0"></span>
+      <button class="secondary" onclick="post('/api/finish_pending')">Transcribe now</button>
+    </div>
+  </section>
+
+  <!-- first run only -->
+  <section class="status setup hidden" id="setupCard">
+    <p class="headline">Downloading speech models</p>
+    <p class="detail">First time only. Keep this window open until it finishes.</p>
+    <div class="row"><span>NVIDIA Nemotron</span><div class="track"><div id="pNem"></div></div><span id="pNemT">0%</span></div>
+    <div class="row" id="moonRow"><span>Moonshine</span><div class="track"><div id="pMoon"></div></div><span id="pMoonT">0%</span></div>
+  </section>
+
+  <!-- the controls -->
+  <section class="console" id="console">
+    <div>
+      <button id="btn" disabled aria-label="Record"><span class="glyph"></span></button>
+      <span class="btnlabel" id="btnLabel">Record</span>
+    </div>
+    <div class="readout">
+      <div id="timer">00:00</div>
+      <div class="meter"><span class="who user">User</span><div class="track"><div id="barMe"></div></div>
+        <span class="dev" id="devMe">Microphone</span></div>
+      <div class="meter"><span class="who system">System</span><div class="track"><div id="barThem"></div></div>
+        <span class="dev" id="devThem">System sound</span></div>
+    </div>
+  </section>
+
+  <!-- after a call -->
+  <section class="saved hidden" id="savedCard">
+    <div class="savedtop">
+      <div>
+        <div class="savedtitle">Call folder</div>
+        <p class="path" id="savedPath"></p>
+      </div>
+    </div>
+    <p class="files" id="savedFiles"></p>
+    <div class="actions">
+      <button class="primary" id="btnExport" onclick="post('/api/open',{what:'export'})">Show transcript for AI</button>
+      <button class="secondary" onclick="post('/api/open',{what:'folder'})">Open call folder</button>
+    </div>
+    <p class="hint">Drop the "Transcript for AI" file into your AI assistant and it will clean up the transcript and write your notes. The instructions are inside the file.</p>
+  </section>
+
+  <section class="transcript">
+    <h2>Transcript</h2>
+    <div id="transcript"></div>
+  </section>
+</main>
+
+<div class="scrim hidden" id="scrim" onclick="openOptions(false)"></div>
+<aside class="drawer" id="drawer" aria-label="Options">
+  <button class="ghost close" onclick="openOptions(false)">Close</button>
+  <h2>Options</h2>
+  <p>Choose which model transcribes during the call (shown live) and whether the other adds a second opinion afterwards.</p>
+  <table class="opt">
+    <tr><th></th><th>During the call</th><th>After the call</th></tr>
+    <tr><td>NVIDIA Nemotron</td><td><input type="radio" name="during" value="nemotron" onchange="saveSettings()"></td>
+        <td><input type="checkbox" id="afterNem" onchange="saveSettings()"></td></tr>
+    <tr><td>Moonshine</td><td><input type="radio" name="during" value="moonshine" onchange="saveSettings()"></td>
+        <td><input type="checkbox" id="afterMoon" onchange="saveSettings()"></td></tr>
+    <tr><td>Neither</td><td><input type="radio" name="during" value="none" onchange="saveSettings()"></td><td></td></tr>
+  </table>
+  <p class="hint" id="setHint"></p>
+  <div class="folderset">
+    <div class="flabel">Save calls to</div>
+    <div class="fpath" id="folderPath"></div>
+    <div class="actions">
+      <button class="secondary" id="btnFolder" onclick="chooseFolder()">Change folder</button>
+      <button class="ghost" id="btnFolderReset" onclick="resetFolder()">Use default</button>
+    </div>
+    <div class="errline hidden" id="folderErr"></div>
+  </div>
+  <div class="sources">
+    <label><input type="checkbox" id="optMe" checked>Record the user (microphone)</label>
+    <label><input type="checkbox" id="optThem" checked>Record the system sound</label>
+  </div>
+  <p class="hint" id="optLocked"></p>
+  <div class="about">
+    <div class="flabel">About FreeCallNotes <span id="appVersion"></span></div>
+    <p>Free, open-source software under the GNU General Public License v3. It comes with no warranty.</p>
+    <p>Speech models: NVIDIA Nemotron (NVIDIA Open Model License) and Moonshine (MIT License). Recordings and transcripts stay on this computer.</p>
+    <div class="actions">
+      <button class="secondary" onclick="post('/api/open',{what:'legal'})">Licenses and notices</button>
+      <button class="ghost" onclick="openOptions(false); showNotice(true)">Show the recording notice</button>
+    </div>
+  </div>
+</aside>
+
+<div class="modal hidden" id="notice" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
+  <div class="box">
+    <h2 id="noticeTitle">Before you record</h2>
+    <dl>
+      <dt>Get consent to record</dt>
+      <dd>In many countries and US states, everyone on a call must agree to being recorded. Tell the other people on the call and get their consent before you press Record. You are responsible for following the law where you and they are, and your organisation's rules.</dd>
+      <dt>Transcripts can be wrong</dt>
+      <dd>Transcripts are made automatically by speech recognition and can contain mistakes, especially names and numbers. Check anything important against the recording before you rely on it.</dd>
+      <dt>Take care with AI assistants</dt>
+      <dd>The "Transcript for AI" file contains everything said on the call. Only give it to an AI assistant you and your organisation are allowed to use, because that service will receive the content.</dd>
+      <dt>Your recordings stay here</dt>
+      <dd>Recordings and transcripts are saved only on this computer. FreeCallNotes connects to the internet only to download its speech models.</dd>
+      <dt>No warranty</dt>
+      <dd>FreeCallNotes is free software provided "as is", without any warranty, under the GNU General Public License v3.</dd>
+    </dl>
+    <div class="actions"><button class="primary" id="noticeOk" onclick="acceptNotice()">I understand</button></div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const LABEL = { me: 'User', them: 'System' };
+const NAME = { nemotron: 'Nemotron', moonshine: 'Moonshine' };
+let state = 'starting', info = {}, lines = [], partial = { me: '', them: '' }, pendingCount = 0, settings = {}, jobs = [], elapsed = 0;
+
+function post(url, body) {
+  return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) }).then(r => r.json());
+}
+function fmt(sec) {
+  sec = Math.floor(Math.max(0, sec || 0));
+  const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60;
+  return (h ? h + ':' + String(m).padStart(2, '0') : String(m).padStart(2, '0')) + ':' + String(s).padStart(2, '0');
+}
+function dur(sec) { sec = Math.round(sec || 0); return sec < 60 ? sec + ' s' : Math.floor(sec / 60) + ' min ' + (sec % 60) + ' s'; }
+function esc(t) { return String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function show(id, on) { $(id).classList.toggle('hidden', !on); }
+function duringModel() { return settings.nemotron === 'during' ? 'nemotron' : settings.moonshine === 'during' ? 'moonshine' : null; }
+function afterModels() { return ['nemotron', 'moonshine'].filter(m => settings[m] === 'after'); }
+
+/* ---------- the status panel ---------- */
+const STEP = { starting: 0, setup: 0, loading: 0, idle: 0, recording: 1, stopping: 2, processing: 3, exporting: 3, catching_up: 3, done: 4, error: 0 };
+
+function renderStatus() {
+  const step = STEP[state] ?? 0;
+  const mood = state === 'recording' ? 'rec' : ['stopping', 'processing', 'exporting', 'catching_up'].includes(state) ? 'work'
+             : state === 'done' ? 'ok' : state === 'error' ? 'bad' : '';
+  document.querySelectorAll('#rail li').forEach(li => {
+    const n = +li.dataset.step;
+    li.className = n < step ? 'past' : n === step ? 'now ' + mood : '';
+  });
+  $('railFill').style.width = (step / 4 * 80) + '%';
+
+  const dm = duringModel(), am = afterModels();
+  let head = '', det = '';
+  switch (state) {
+    case 'starting': head = 'Starting up'; break;
+    case 'setup': head = 'Getting ready'; det = 'Downloading speech models (first time only).'; break;
+    case 'loading': head = 'Loading'; break;
+    case 'idle':
+      head = 'Ready to record';
+      det = 'Press Record when your call starts. ' + (dm ? NAME[dm] + ' will transcribe as you talk' + (am.length ? ', then ' + NAME[am[0]] + ' adds a second opinion.' : '.')
+                                                       : 'The transcript is made after the call.');
+      break;
+    case 'recording':
+      head = 'Recording';
+      det = 'Saving your microphone and the system sound' + (dm ? ', transcribing live with ' + NAME[dm] + '.' : '. Transcription starts when you stop.');
+      break;
+    case 'stopping': head = 'Saving the recording'; det = 'Closing the audio files.'; break;
+    case 'processing':
+      head = 'Transcribing';
+      det = 'Finishing the transcript' + (info.duration ? ' for ' + dur(info.duration) + ' of call' : '') + '. You can close the window and let it finish in the background.';
+      break;
+    case 'exporting': head = 'Preparing your files'; det = 'Writing the transcript and the transcript for AI.'; break;
+    case 'catching_up': head = 'Transcribing earlier calls'; det = 'Your earlier recordings are being transcribed into their own folders.'; break;
+    case 'done': head = 'Saved'; det = 'Your recording, transcript and transcript for AI are in the call folder.'; break;
+    case 'error': head = 'Something went wrong'; break;
+  }
+  $('headline').textContent = head;
+  $('detail').textContent = det;
+
+  renderModels();
+  const w = info.warnings && info.warnings.length && state === 'recording' ? info.warnings.join(' ') : '';
+  $('warn').textContent = w; show('warn', !!w);
+  $('err').textContent = info.error || ''; show('err', !!info.error);
+  $('note').textContent = info.notice || ''; show('note', !!info.notice && (state === 'idle' || state === 'done'));
+  show('bgRow', ['processing', 'exporting', 'catching_up'].includes(state));
+  show('pendingRow', (state === 'idle' || state === 'done') && pendingCount > 0);
+  $('pendingText').textContent = pendingCount === 1 ? 'An earlier call was not transcribed.' : pendingCount + ' earlier calls were not transcribed.';
+
+  // controls
+  const btn = $('btn');
+  btn.classList.toggle('stop', state === 'recording');
+  btn.disabled = !(state === 'idle' || state === 'done' || state === 'recording');
+  btn.setAttribute('aria-label', state === 'recording' ? 'Stop' : 'Record');
+  $('btnLabel').textContent = state === 'recording' ? 'Stop' : 'Record';
+  $('timer').classList.toggle('live', state === 'recording');
+  document.querySelectorAll('.meter .dev').forEach(d => d.style.visibility = state === 'recording' ? 'visible' : 'hidden');
+  show('setupCard', state === 'setup');
+  show('console', state !== 'setup');
+  show('savedCard', state === 'done' && !!info.folder);
+  if (state === 'done') {
+    $('savedPath').textContent = info.folder || '';
+    const files = (info.files || []).filter(f => !f.endsWith('.json'));
+    $('savedFiles').innerHTML = files.map(f => '<span>' + esc(f) + '</span>').join('');
+    $('btnExport').disabled = !info.export;
+  }
+  const locked = !(state === 'idle' || state === 'done');
+  document.querySelectorAll('#drawer input').forEach(i => i.disabled = locked || i.dataset.off === '1');
+  $('btnFolder').disabled = locked; $('btnFolderReset').disabled = locked;
+  $('optLocked').textContent = locked ? 'Options can be changed when no call is being recorded or transcribed.' : '';
+}
+
+function renderModels() {
+  let rows = jobs.slice();
+  if (!rows.length && (state === 'idle' || state === 'done')) rows = [];
+  $('models').innerHTML = rows.map(j => {
+    let what = j.mode === 'during' ? 'during the call' : 'after the call';
+    let st = '', cls = '', pct = Math.round((j.fraction || 0) * 100);
+    if (j.state === 'waiting') st = 'starts when the call ends';
+    else if (j.state === 'failed') { st = 'failed'; cls = 'failed'; }
+    else if (j.state === 'done') { st = 'done'; cls = 'done'; pct = 100; }
+    else if (state === 'recording' && j.mode === 'during') {
+      st = (j.behind == null || j.behind < 3) ? 'keeping up' : Math.round(j.behind) + ' s behind'; cls = 'live';
+    } else st = j.mode === 'during' && j.behind != null && j.behind > 0 ? 'last ' + Math.ceil(j.behind) + ' s' : pct + '%';
+    const bar = state !== 'recording' && j.state !== 'waiting' ? '<div class="bar"><div style="width:' + pct + '%"></div></div>' : '';
+    return '<div class="model"><span class="name">' + NAME[j.model] + '</span><span class="what">' + what + '</span><span class="state ' + cls + '">' + st + '</span>' + bar + '</div>';
+  }).join('');
+}
+
+/* ---------- transcript ---------- */
+function renderTranscript() {
+  const box = $('transcript');
+  const atBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 30;
+  const sorted = lines.slice().sort((a, b) => a.start - b.start);
+  let html = sorted.map(l => '<div class="ln' + (l.echo ? ' echo' : '') + '"><span class="ts">' + fmt(l.start) + '</span><span class="who ' + l.key + '">' + LABEL[l.key] +
+    '</span><span class="txt">' + esc(l.text) + (l.echo ? '<span class="tag">echo from speakers</span>' : '') + '</span></div>').join('');
+  for (const k of ['me', 'them']) if (partial[k]) html += '<div class="ln partial"><span class="ts"></span><span class="who ' + k + '">' + LABEL[k] + '</span><span class="txt">' + esc(partial[k]) + '</span></div>';
+  if (!html) {
+    const dm = duringModel();
+    html = '<div class="empty">' + ({
+      recording: dm ? 'Listening. Lines appear here as people speak.' : 'The transcript appears here after the call.',
+      stopping: 'Saving...', processing: 'The transcript appears here when it is ready.', exporting: 'Almost there...'
+    }[state] || 'The transcript of your next call appears here.') + '</div>';
+  }
+  box.innerHTML = html;
+  if (atBottom) box.scrollTop = box.scrollHeight;
+}
+
+/* ---------- options ---------- */
+function openOptions(on) {
+  $('drawer').classList.toggle('open', on);
+  show('scrim', on);
+  if (on) setTimeout(() => (document.querySelector('#drawer input:not(:disabled)') || $('drawer')).focus(), 50);
+}
+function applySettings(s) {
+  settings = s || {};
+  if (settings.app_version) $('appVersion').textContent = 'v' + settings.app_version;
+  if (noticeNeeded() && state !== 'recording') showNotice(true);
+  $('folderPath').textContent = settings.notes_dir_effective || '';
+  show('btnFolderReset', !!settings.notes_dir);
+  const during = duringModel() || 'none';
+  document.querySelectorAll('input[name=during]').forEach(r => r.checked = r.value === during);
+  $('afterNem').checked = settings.nemotron === 'after';
+  $('afterMoon').checked = settings.moonshine === 'after';
+  $('afterNem').dataset.off = during === 'nemotron' ? '1' : '0';     // already transcribed during the call
+  $('afterMoon').dataset.off = during === 'moonshine' ? '1' : '0';
+  const n = [settings.nemotron, settings.moonshine].filter(v => v && v !== 'off').length;
+  $('setHint').textContent =
+    (during === 'none' ? 'Records only; the transcript is made after the call. ' :
+      NAME[during] + ' transcribes during the call and shows it live' + (during === 'moonshine' ? ' (in roughly 30-second chunks). ' : '. ')) +
+    (n === 2 ? 'The other model adds a second opinion after the call, and the transcript for AI includes both for cross-checking.' : '');
+  renderStatus();
+}
+async function chooseFolder() {
+  $('folderErr').textContent = ''; show('folderErr', false);
+  $('btnFolder').disabled = true; $('btnFolder').textContent = 'Choosing...';
+  const r = await post('/api/choose_folder');
+  $('btnFolder').disabled = false; $('btnFolder').textContent = 'Change folder';
+  if (r.settings) applySettings(r.settings);
+  else if (r.error) { $('folderErr').textContent = r.error; show('folderErr', true); }
+}
+async function resetFolder() {
+  const r = await post('/api/reset_folder');
+  if (r.settings) applySettings(r.settings);
+}
+async function saveSettings() {
+  const during = (document.querySelector('input[name=during]:checked') || {}).value || 'nemotron';
+  const after = [];
+  if ($('afterNem').checked && during !== 'nemotron') after.push('nemotron');
+  if ($('afterMoon').checked && during !== 'moonshine') after.push('moonshine');
+  if (during === 'none' && !after.length) after.push('nemotron');
+  const r = await post('/api/settings', { during, after });
+  if (r.settings) applySettings(r.settings);
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') openOptions(false); });
+
+/* ---------- actions ---------- */
+function showNotice(on) { show('notice', on); if (on) setTimeout(() => $('noticeOk').focus(), 30); }
+function noticeNeeded() { return (settings.notice_accepted || 0) < (settings.notice_version || 1); }
+async function acceptNotice() { settings.notice_accepted = settings.notice_version || 1; showNotice(false); await post('/api/accept_notice', {}); }
+$('btn').onclick = async () => {
+  if (state !== 'recording' && noticeNeeded()) { showNotice(true); return; }
+  if (state === 'recording') { $('btn').disabled = true; await post('/api/stop'); return; }
+  lines = []; partial = { me: '', them: '' }; jobs = []; info = {}; renderTranscript(); $('timer').textContent = '00:00';
+  $('btn').disabled = true;
+  const r = await post('/api/start', { me: $('optMe').checked, them: $('optThem').checked });
+  if (!r.ok) { info.error = r.error || 'Could not start recording.'; renderStatus(); }
+};
+async function finishInBackground() { $('btnBg').disabled = true; await post('/api/finish_in_background'); }
+window.addEventListener('beforeunload', e => {
+  if (['recording', 'stopping', 'processing', 'exporting', 'catching_up'].includes(state)) { e.preventDefault(); e.returnValue = ''; }
+});
+
+/* ---------- live updates from the app ---------- */
+function setState(s, extra) {
+  const was = state;
+  state = s;
+  info = Object.assign({}, info, extra || {});
+  if (s === 'recording' && was !== 'recording') { lines = []; partial = { me: '', them: '' }; }
+  if (s !== 'recording') { $('barMe').style.width = '0%'; $('barThem').style.width = '0%'; partial = { me: '', them: '' }; }
+  if (extra && extra.devices) { $('devMe').textContent = extra.devices.me || 'Not recording'; $('devThem').textContent = extra.devices.them || 'Not recording'; }
+  if (extra && extra.pending !== undefined) pendingCount = extra.pending;
+  renderStatus(); renderTranscript();
+}
+function connect() {
+  const es = new EventSource('/api/events');
+  es.onmessage = e => {
+    const ev = JSON.parse(e.data);
+    switch (ev.type) {
+      case 'snapshot':
+        lines = ev.lines || []; jobs = ev.jobs || []; pendingCount = ev.pending || 0;
+        info = Object.assign({}, ev.info || {}, ev.result || {});
+        settings = ev.settings || {}; applySettings(settings);
+        if (ev.setup) setSetup(ev.setup);
+        setState(ev.state);
+        break;
+      case 'state': { const { type, state: s, ...rest } = ev; setState(s, rest); break; }
+      case 'setup': setSetup(ev.setup); break;
+      case 'jobs': jobs = ev.jobs || []; renderModels(); break;
+      case 'levels':
+        elapsed = ev.elapsed; $('timer').textContent = fmt(ev.elapsed);
+        $('barMe').style.width = Math.min(100, (ev.levels.me || 0) * 600) + '%';
+        $('barThem').style.width = Math.min(100, (ev.levels.them || 0) * 600) + '%';
+        break;
+      case 'lines': lines = ev.lines || []; renderTranscript(); break;
+      case 'settings': applySettings(ev.settings); break;
+      case 'live_line': if (['recording', 'stopping', 'processing'].includes(state)) { lines.push(ev.line); renderTranscript(); } break;
+      case 'live_partial': if (state === 'recording') { partial[ev.key] = ev.text; renderTranscript(); } break;
+      case 'echo': lines.forEach(l => { if (l.id === ev.id) l.echo = true; }); renderTranscript(); break;
+    }
+  };
+  es.onerror = () => { es.close(); setTimeout(connect, 1500); };
+}
+function setSetup(s) {
+  $('pNem').style.width = s.nemotron * 100 + '%'; $('pNemT').textContent = Math.round(s.nemotron * 100) + '%';
+  $('pMoon').style.width = s.moonshine * 100 + '%'; $('pMoonT').textContent = Math.round(s.moonshine * 100) + '%';
+  show('moonRow', settings.moonshine && settings.moonshine !== 'off');
+}
+renderStatus(); renderTranscript();
+connect();
+</script>
+</body>
+</html>
