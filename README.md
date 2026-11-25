@@ -12,9 +12,11 @@ FreeCallNotes records both sides of any call (Zoom, Teams, Google Meet, Webex, a
 - **Two clean tracks.** Your microphone ("User") and the computer's system sound ("System") are recorded separately, so the transcript knows who said what.
 - **Doesn't get in the way.** It listens to the microphone in shared mode, so your meeting app keeps working normally.
 - **Runs on your computer.** Speech recognition runs locally with open models (NVIDIA Nemotron, and optionally Moonshine). No cloud service, no subscription.
+- **Many languages.** Install the optional Whisper large-v3 turbo model in Options for calls in about 100 languages.
+- **Call pop-ups.** When Zoom, Teams or your browser starts using the microphone, a small pop-up offers to open FreeCallNotes. It never records on its own, and you can turn it off.
 - **Live transcript** during the call, plus an optional second transcription afterwards for extra accuracy.
 - **"Transcript for AI" file.** One text file with the transcript and clear instructions. Drop it into the AI assistant you're allowed to use and it writes clean notes, decisions and action items.
-- **Portable.** Everything (app, models, recordings) lives in one folder. Delete the folder and it's gone.
+- **Portable.** Everything (app, models, recordings) lives in one folder. Turn off call pop-ups, delete the folder and it's gone.
 
 > **Before you record:** in many places everyone on a call must agree to being recorded. You are responsible for getting consent and following your local law and your organisation's rules. See [DISCLAIMER.md](DISCLAIMER.md).
 

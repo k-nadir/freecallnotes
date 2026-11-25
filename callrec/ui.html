@@ -149,6 +149,23 @@
   table.opt td:first-child, table.opt th:first-child { text-align: left; }
   table.opt input { accent-color: var(--user); width: 16px; height: 16px; }
   table.opt input:disabled { opacity: .3; }
+  table.opt td { vertical-align: middle; }
+  table.opt td:first-child { padding-right: 8px; }
+  .mname { font-size: 13px; color: var(--text); }
+  .mdesc { font-size: 11.5px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+  .mdesc strong { color: var(--text); font-weight: 600; }
+  td.inst { white-space: nowrap; font-size: 12px; }
+  td.inst .ok { color: var(--ok); font-size: 14px; }
+  td.inst button { font-size: 12px; padding: 4px 9px; }
+  td.inst .rm { display: block; margin: 2px auto 0; background: none; border: none; color: var(--muted); padding: 2px; cursor: pointer; text-decoration: underline; font-size: 11.5px; }
+  td.inst .rm:hover { color: var(--text); }
+  td.inst .pct { color: var(--muted); }
+  .na { color: var(--faint); }
+  .langrow { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 13px; }
+  .langrow.hidden { display: none; }
+  .langrow select { background: var(--panel-2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; font: inherit; }
+  .toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 2px; }
+  .toggle input { accent-color: var(--user); margin: 0; }
   .drawer .sources { margin-top: 18px; display: grid; gap: 8px; font-size: 13px; }
   .drawer .sources input { accent-color: var(--user); margin-right: 8px; }
   .drawer .close { float: right; }
@@ -271,16 +288,43 @@
 <aside class="drawer" id="drawer" aria-label="Options">
   <button class="ghost close" onclick="openOptions(false)">Close</button>
   <h2>Options</h2>
-  <p>Choose which model transcribes during the call (shown live) and whether the other adds a second opinion afterwards.</p>
+  <p>Install the speech models you want, choose which one transcribes during the call (shown live), and which add a second opinion afterwards.</p>
   <table class="opt">
-    <tr><th></th><th>During the call</th><th>After the call</th></tr>
-    <tr><td>NVIDIA Nemotron</td><td><input type="radio" name="during" value="nemotron" onchange="saveSettings()"></td>
-        <td><input type="checkbox" id="afterNem" onchange="saveSettings()"></td></tr>
-    <tr><td>Moonshine</td><td><input type="radio" name="during" value="moonshine" onchange="saveSettings()"></td>
-        <td><input type="checkbox" id="afterMoon" onchange="saveSettings()"></td></tr>
-    <tr><td>Neither</td><td><input type="radio" name="during" value="none" onchange="saveSettings()"></td><td></td></tr>
+    <tr><th>Model</th><th>Installed</th><th>During the call</th><th>After the call</th></tr>
+    <tr><td><div class="mname">NVIDIA Nemotron</div><div class="mdesc">English. Fast, and live while you talk. 630&nbsp;MB.</div></td>
+        <td class="inst" id="inst-nemotron"></td>
+        <td><input type="radio" name="during" value="nemotron" aria-label="Nemotron during the call" onchange="saveSettings()"></td>
+        <td><input type="checkbox" id="afterNem" aria-label="Nemotron after the call" onchange="saveSettings()"></td></tr>
+    <tr><td><div class="mname">Moonshine</div><div class="mdesc">English. A good second opinion. 260&nbsp;MB.</div></td>
+        <td class="inst" id="inst-moonshine"></td>
+        <td><input type="radio" name="during" value="moonshine" aria-label="Moonshine during the call" onchange="saveSettings()"></td>
+        <td><input type="checkbox" id="afterMoon" aria-label="Moonshine after the call" onchange="saveSettings()"></td></tr>
+    <tr><td><div class="mname">Whisper large-v3 turbo</div><div class="mdesc"><strong>For calls in other languages:</strong> understands about 100. After the call only. 1&nbsp;GB.</div></td>
+        <td class="inst" id="inst-whisper"></td>
+        <td><span class="na" title="Whisper is too slow to run live">&ndash;</span></td>
+        <td><input type="checkbox" id="afterWhisper" aria-label="Whisper after the call" onchange="saveSettings()"></td></tr>
+    <tr><td><div class="mname">Neither</div><div class="mdesc">Record now, transcribe after the call.</div></td><td></td>
+        <td><input type="radio" name="during" value="none" aria-label="No model during the call" onchange="saveSettings()"></td><td></td></tr>
   </table>
+  <div class="langrow hidden" id="langRow">
+    <label for="whisperLang">Whisper language</label>
+    <select id="whisperLang" onchange="post('/api/whisper_language', { language: this.value })">
+      <option value="auto">Detect automatically</option>
+      <option value="en">English</option><option value="ar">Arabic</option><option value="bn">Bengali</option>
+      <option value="zh">Chinese</option><option value="nl">Dutch</option><option value="fr">French</option>
+      <option value="de">German</option><option value="el">Greek</option><option value="he">Hebrew</option>
+      <option value="hi">Hindi</option><option value="id">Indonesian</option><option value="it">Italian</option>
+      <option value="ja">Japanese</option><option value="ko">Korean</option><option value="ms">Malay</option>
+      <option value="fa">Persian</option><option value="pl">Polish</option><option value="pt">Portuguese</option>
+      <option value="pa">Punjabi</option><option value="ro">Romanian</option><option value="ru">Russian</option>
+      <option value="es">Spanish</option><option value="sw">Swahili</option><option value="sv">Swedish</option>
+      <option value="tl">Tagalog</option><option value="ta">Tamil</option><option value="th">Thai</option>
+      <option value="tr">Turkish</option><option value="uk">Ukrainian</option><option value="ur">Urdu</option>
+      <option value="vi">Vietnamese</option>
+    </select>
+  </div>
   <p class="hint" id="setHint"></p>
+  <div class="errline hidden" id="modelErr"></div>
   <div class="folderset">
     <div class="flabel">Save calls to</div>
     <div class="fpath" id="folderPath"></div>
@@ -295,6 +339,11 @@
     <label><input type="checkbox" id="optThem" checked>Record the system sound</label>
   </div>
   <p class="hint" id="optLocked"></p>
+  <div class="folderset">
+    <div class="flabel">Call pop-ups</div>
+    <label class="toggle"><input type="checkbox" id="optPopups" onchange="post('/api/popups', { on: this.checked })">Show a pop-up when a call starts</label>
+    <p class="hint">When Zoom, Teams, Webex, Slack, WhatsApp or your browser starts using the microphone, a small pop-up offers to open FreeCallNotes. A tiny helper waits in the background for Windows to signal this; it doesn't check anything repeatedly and never records on its own.</p>
+  </div>
   <div class="about">
     <div class="flabel">About FreeCallNotes <span id="appVersion"></span></div>
     <p>Free, open-source software under the GNU General Public License v3. It comes with no warranty.</p>
@@ -323,6 +372,8 @@
       <dd>The "Transcript for AI" file contains everything said on the call. Only give it to an AI assistant you and your organisation are allowed to use, because that service will receive the content.</dd>
       <dt>Your recordings stay here</dt>
       <dd>Recordings and transcripts are saved only on this computer. FreeCallNotes connects to the internet only to download its speech models and to check for updates (at most every 30 days, or when you ask). Updates are only installed if you choose to.</dd>
+      <dt>Call pop-ups</dt>
+      <dd>When a call app or your browser starts using the microphone, FreeCallNotes can show a small pop-up offering to open it. A tiny helper starts with Windows for this; it never records. Turn it off in Options, or click "Don't show again" on the pop-up.</dd>
       <dt>No warranty</dt>
       <dd>FreeCallNotes is free software provided "as is", without any warranty, under the GNU General Public License v3.</dd>
     </dl>
@@ -333,7 +384,10 @@
 <script>
 const $ = id => document.getElementById(id);
 const LABEL = { me: 'User', them: 'System' };
-const NAME = { nemotron: 'Nemotron', moonshine: 'Moonshine' };
+const NAME = { nemotron: 'Nemotron', moonshine: 'Moonshine', whisper: 'Whisper' };
+const MODELS = ['nemotron', 'moonshine', 'whisper'];
+const SIZE = { nemotron: '630 MB', moonshine: '260 MB', whisper: '1 GB' };
+let modelProgress = {};
 let state = 'starting', info = {}, lines = [], partial = { me: '', them: '' }, pendingCount = 0, settings = {}, jobs = [], elapsed = 0;
 
 function post(url, body) {
@@ -348,7 +402,7 @@ function dur(sec) { sec = Math.round(sec || 0); return sec < 60 ? sec + ' s' : M
 function esc(t) { return String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 function show(id, on) { $(id).classList.toggle('hidden', !on); }
 function duringModel() { return settings.nemotron === 'during' ? 'nemotron' : settings.moonshine === 'during' ? 'moonshine' : null; }
-function afterModels() { return ['nemotron', 'moonshine'].filter(m => settings[m] === 'after'); }
+function afterModels() { return MODELS.filter(m => settings[m] === 'after'); }
 
 /* ---------- the status panel ---------- */
 const STEP = { starting: 0, setup: 0, loading: 0, idle: 0, recording: 1, stopping: 2, processing: 3, exporting: 3, catching_up: 3, done: 4, error: 0 };
@@ -420,6 +474,7 @@ function renderStatus() {
   const locked = !(state === 'idle' || state === 'done');
   document.querySelectorAll('#drawer input').forEach(i => i.disabled = locked || i.dataset.off === '1');
   $('btnFolder').disabled = locked; $('btnFolderReset').disabled = locked;
+  document.querySelectorAll('#drawer td.inst button, #whisperLang').forEach(b => b.disabled = locked || (b.tagName === 'BUTTON' && !!settings.installing && !b.classList.contains('rm')));
   $('optLocked').textContent = locked ? 'Options can be changed when no call is being recorded or transcribed.' : '';
 }
 
@@ -474,18 +529,62 @@ function applySettings(s) {
   $('folderPath').textContent = settings.notes_dir_effective || '';
   show('btnFolderReset', !!settings.notes_dir);
   const during = duringModel() || 'none';
-  document.querySelectorAll('input[name=during]').forEach(r => r.checked = r.value === during);
-  $('afterNem').checked = settings.nemotron === 'after';
-  $('afterMoon').checked = settings.moonshine === 'after';
-  $('afterNem').dataset.off = during === 'nemotron' ? '1' : '0';     // already transcribed during the call
-  $('afterMoon').dataset.off = during === 'moonshine' ? '1' : '0';
-  const n = [settings.nemotron, settings.moonshine].filter(v => v && v !== 'off').length;
+  const inst = settings.installed || {};
+  document.querySelectorAll('input[name=during]').forEach(r => {
+    r.checked = r.value === during;
+    r.dataset.off = r.value !== 'none' && !inst[r.value] ? '1' : '0';   // install a model before choosing it
+  });
+  const AFTER = { nemotron: 'afterNem', moonshine: 'afterMoon', whisper: 'afterWhisper' };
+  for (const m of MODELS) {
+    $(AFTER[m]).checked = settings[m] === 'after';
+    $(AFTER[m]).dataset.off = (during === m || !inst[m]) ? '1' : '0';  // already live, or not installed
+  }
+  renderInstalled();
+  $('whisperLang').value = settings.whisper_language || 'auto';
+  show('langRow', !!inst.whisper);
+  $('optPopups').checked = settings.call_popups !== false;
+  const n = MODELS.filter(m => settings[m] && settings[m] !== 'off').length;
   $('setHint').textContent =
     (during === 'none' ? 'Records only; the transcript is made after the call. ' :
       NAME[during] + ' transcribes during the call and shows it live' + (during === 'moonshine' ? ' (in roughly 30-second chunks). ' : '. ')) +
-    (n === 2 ? 'The other model adds a second opinion after the call, and the transcript for AI includes both for cross-checking.' : '');
+    (n >= 2 ? 'The other model' + (n > 2 ? 's add' : ' adds') + ' a second opinion after the call, and the transcript for AI includes every version for cross-checking.' : '') +
+    (settings.whisper === 'after' ? ' For a call that isn\u2019t in English, Whisper\u2019s transcript is the one shown.' : '');
   renderStatus();
 }
+/* ---------- installing and removing models ---------- */
+function renderInstalled() {
+  const inst = settings.installed || {};
+  for (const m of MODELS) {
+    const cell = $('inst-' + m);
+    if (settings.installing === m) {
+      const p = modelProgress[m];
+      cell.innerHTML = '<span class="pct">Downloading ' + (p == null ? '' : Math.round(p * 100) + '%') + '</span>';
+    } else if (inst[m]) {
+      cell.innerHTML = '<span class="ok" aria-label="Installed">&#10003;</span><button class="rm" onclick="removeModel(\'' + m + '\')">Remove</button>';
+    } else {
+      cell.innerHTML = '<button class="secondary" onclick="installModel(\'' + m + '\')"' + (settings.installing ? ' disabled' : '') + '>Install</button>';
+    }
+  }
+}
+function modelErr(t) { $('modelErr').textContent = t || ''; show('modelErr', !!t); }
+async function installModel(m) {
+  modelErr('');
+  modelProgress[m] = 0; settings.installing = m; renderInstalled();
+  const r = await post('/api/model_install', { model: m }).catch(() => ({ ok: false }));
+  if (!r.ok) { settings.installing = null; renderInstalled(); modelErr(r.error || "The download couldn't start."); }
+}
+async function removeModel(m) {
+  modelErr('');
+  if (!confirm('Remove ' + NAME[m] + '? Its files are deleted from this computer. You can install it again later (' + SIZE[m] + ' download).')) return;
+  const r = await post('/api/model_remove', { model: m }).catch(() => ({ ok: false }));
+  if (!r.ok) modelErr(r.error || "Couldn't remove it.");
+}
+function onModel(ev) {
+  if (ev.progress != null) { modelProgress[ev.model] = ev.progress; if (settings.installing === ev.model) renderInstalled(); }
+  if (ev.error) modelErr(ev.error);
+  if (ev.done) modelErr('');
+}
+
 /* ---------- updates (only when the user asks) ---------- */
 let updateReady = null, updating = false;
 function updMsg(t) { $('updMsg').textContent = t; if (updating) $('updBarText').textContent = t; }
@@ -543,7 +642,8 @@ async function saveSettings() {
   const after = [];
   if ($('afterNem').checked && during !== 'nemotron') after.push('nemotron');
   if ($('afterMoon').checked && during !== 'moonshine') after.push('moonshine');
-  if (during === 'none' && !after.length) after.push('nemotron');
+  if ($('afterWhisper').checked) after.push('whisper');
+  if (during === 'none' && !after.length) { const first = MODELS.find(m => (settings.installed || {})[m]); if (first) after.push(first); }
   const r = await post('/api/settings', { during, after });
   if (r.settings) applySettings(r.settings);
 }
@@ -601,6 +701,7 @@ function connect() {
       case 'lines': lines = ev.lines || []; renderTranscript(); break;
       case 'settings': applySettings(ev.settings); break;
       case 'update': onUpdate(ev); break;
+      case 'model': onModel(ev); break;
       case 'live_line': if (['recording', 'stopping', 'processing'].includes(state)) { lines.push(ev.line); renderTranscript(); } break;
       case 'live_partial': if (state === 'recording') { partial[ev.key] = ev.text; renderTranscript(); } break;
       case 'echo': lines.forEach(l => { if (l.id === ev.id) l.echo = true; }); renderTranscript(); break;

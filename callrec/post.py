@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # See LICENSE for the full terms. This program comes with ABSOLUTELY NO WARRANTY.
 """Transcription jobs, each run as its own process:
-    python -m callrec.post nemotron|moonshine during|after <call folder> [live]
+    python -m callrec.post nemotron|moonshine|whisper during|after <call folder> [live]
     python -m callrec.post download          (fetch the Moonshine model)
 Prints one JSON message per line on stdout so the window can show progress.
 """
@@ -255,6 +255,119 @@ def moonshine_run(call_dir, follow, live):
         busy_s=round(busy, 1), audio_s=round(audio_s, 1), speed_x=round(audio_s / busy, 2) if busy else None)
 
 
+# ---------------- Whisper (after the call; about 100 languages) ----------------
+
+# Whisper is known to "hear" these in silence or noise. They're dropped unless clearly spoken.
+PHANTOMS = {"you", "thank you", "thank you.", "thanks for watching", "thanks for watching!", "thank you for watching",
+            "thank you for watching.", "bye", "bye.", ".", "...", "subtitles by the amara.org community"}
+QUIET = 0.004            # 90th-percentile loudness below this is not speech (real quiet speech measured ~0.013)
+
+
+def _speech_segments(a, vad_model):
+    """Stretches of speech (start sample, samples), found by Silero VAD; near-silent ones are skipped."""
+    import sherpa_onnx
+    cfg = sherpa_onnx.VadModelConfig()
+    cfg.silero_vad.model = vad_model
+    cfg.silero_vad.threshold = 0.5
+    cfg.silero_vad.min_silence_duration = 0.5
+    cfg.silero_vad.min_speech_duration = 0.25
+    cfg.silero_vad.max_speech_duration = 20
+    cfg.sample_rate = SR
+    vad = sherpa_onnx.VoiceActivityDetector(cfg, buffer_size_in_seconds=60)
+    out = []
+
+    def drain():
+        while not vad.empty():
+            s = np.array(vad.front.samples, dtype=np.float32)
+            fr = s[:len(s) // 320 * 320].reshape(-1, 320)
+            if len(fr) and float(np.percentile(np.sqrt((fr ** 2).mean(1)), 90)) >= QUIET:
+                out.append((vad.front.start, s))
+            vad.pop()
+    for i in range(0, len(a), 512):
+        vad.accept_waveform(a[i:i + 512])
+        drain()
+    vad.flush()
+    drain()
+    return out
+
+
+def _sentences(text, start, end):
+    """Split a segment's text into sentence lines, sharing out the time by length."""
+    parts = [p.strip() for p in re.split(r"(?<=[.?!。？！])\s+", text) if p.strip()] or [text]
+    total = sum(len(p) for p in parts) or 1
+    lines, t = [], start
+    for p in parts:
+        d = (end - start) * len(p) / total
+        lines.append((round(t, 2), round(t + d, 2), p))
+        t += d
+    return lines
+
+
+def whisper_run(call_dir, follow=False, live=False):
+    import sherpa_onnx
+    call_dir = Path(call_dir)
+    t0 = time.perf_counter()
+    d = config.WHISPER_DIR
+    threads = int(config.settings().get("threads") or 8)
+    lang = config.settings().get("whisper_language") or "auto"
+    segs = {k: _speech_segments(load_wav(call_dir / f"{k}.wav"), str(d / config.VAD_FILE)) for k in _tracks(call_dir)}
+    total = sum(len(s) for v in segs.values() for _, s in v) or 1
+
+    def recognizer(language):
+        return sherpa_onnx.OfflineRecognizer.from_whisper(
+            encoder=str(d / config.WHISPER_FILES[0]), decoder=str(d / config.WHISPER_FILES[1]),
+            tokens=str(d / config.WHISPER_FILES[2]), language=language, task="transcribe",
+            num_threads=threads, tail_paddings=-1)
+
+    def decode(rec, s):
+        st = rec.create_stream()
+        try:
+            if st.has_option("max_tokens_per_second"):
+                st.set_option("max_tokens_per_second", "15")   # fast talkers: don't cut lines short
+        except Exception:
+            pass
+        st.accept_waveform(SR, s)
+        rec.decode_stream(st)
+        return st.result
+
+    if lang == "auto":
+        # Detect the language once, from the longest stretches of speech, then use it for the whole call
+        # (detecting per line goes wrong on short lines like "Yes.").
+        longest = sorted((s for v in segs.values() for _, s in v), key=len, reverse=True)[:4]
+        votes = {}
+        if longest:
+            det = recognizer("")
+            for s in longest:
+                code = (getattr(decode(det, s), "lang", "") or "").strip("<|>")
+                if code:
+                    votes[code] = votes.get(code, 0) + len(s)
+            del det
+        lang = max(votes, key=votes.get) if votes else "en"
+    rec = recognizer(lang)
+    load_s = time.perf_counter() - t0
+    done, busy, last_say = 0, 0.0, 0.0
+    for k, v in segs.items():
+        lines = []
+        for start, s in v:
+            c0 = time.perf_counter()
+            txt = (decode(rec, s).text or "").strip()
+            busy += time.perf_counter() - c0
+            done += len(s)
+            if txt and not (txt.lower() in PHANTOMS and len(s) > 2.5 * SR):
+                for a, b, p in _sentences(txt, start / SR, (start + len(s)) / SR):
+                    lines.append({"key": k, "start": a, "end": b, "text": p, "echo": False})
+            if time.perf_counter() - last_say > 2:
+                last_say = time.perf_counter()
+                say(type="progress", stage="whisper", fraction=round(done / total, 3), behind_s=None)
+        (call_dir / f"whisper_{k}.json").write_text(json.dumps(lines, indent=1, ensure_ascii=False), encoding="utf-8")
+    (call_dir / "whisper_meta.json").write_text(json.dumps({"language": lang, "chosen": config.settings().get("whisper_language")}))
+    audio_s = total / SR
+    say(type="progress", stage="whisper", fraction=1.0, behind_s=0)
+    say(type="timing", model="whisper", mode="after", language=lang, seconds=round(time.perf_counter() - t0, 1),
+        busy_s=round(busy, 1), load_s=round(load_s, 1), speech_s=round(audio_s, 1), threads=threads,
+        speed_x=round(audio_s / busy, 2) if busy else None)
+
+
 class LineSplitter:
     """Turns Nemotron's running text into lines: split at sentence ends, or at the model's own pauses."""
 
@@ -303,11 +416,11 @@ if __name__ == "__main__":
         if cmd == "download":
             moonshine_model()
             say(type="result", ok=True)
-        elif cmd in ("nemotron", "moonshine"):
+        elif cmd in ("nemotron", "moonshine", "whisper"):
             mode = sys.argv[2]                      # "during" (follow the recording) or "after"
             call_dir = sys.argv[3]
             live = len(sys.argv) > 4 and sys.argv[4] == "live"
-            (nemotron_run if cmd == "nemotron" else moonshine_run)(call_dir, mode == "during", live)
+            {"nemotron": nemotron_run, "moonshine": moonshine_run, "whisper": whisper_run}[cmd](call_dir, mode == "during", live)
     except Exception:
         logging.exception("pass failed")
         raise

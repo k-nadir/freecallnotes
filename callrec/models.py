@@ -2,7 +2,7 @@
 # Copyright (C) 2026 Nadir Khawaja
 # SPDX-License-Identifier: GPL-3.0-or-later
 # See LICENSE for the full terms. This program comes with ABSOLUTELY NO WARRANTY.
-"""First-run download of the two speech models (about 930 MB in total)."""
+"""Downloading and removing the speech models (Nemotron, Moonshine, Whisper)."""
 import json
 import subprocess
 import sys
@@ -14,23 +14,24 @@ from . import config
 HF = "https://huggingface.co/{repo}/resolve/main/{name}"
 
 
-def download_nemotron(progress):
-    """progress(fraction) is called as bytes arrive."""
-    d = config.NEMOTRON_DIR
+def _download(items, d, progress):
+    """items: [(url, filename)]. Downloads into folder d with progress(fraction); resumes cleanly by
+    skipping files that are already complete, and writes each file as .part first."""
     d.mkdir(parents=True, exist_ok=True)
     sizes = {}
-    for f in config.NEMOTRON_FILES:
-        req = urllib.request.Request(HF.format(repo=config.NEMOTRON_REPO, name=f), method="HEAD")
+    for url, f in items:
+        req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": "FreeCallNotes"})
         with urllib.request.urlopen(req, timeout=60) as r:
             sizes[f] = int(r.headers.get("Content-Length") or 0)
     total = max(1, sum(sizes.values()))
-    done = sum(sizes[f] for f in config.NEMOTRON_FILES if (d / f).exists() and (d / f).stat().st_size == sizes[f])
-    for f in config.NEMOTRON_FILES:
+    done = sum(sizes[f] for _, f in items if (d / f).exists() and (d / f).stat().st_size == sizes[f])
+    for url, f in items:
         target = d / f
         if target.exists() and target.stat().st_size == sizes[f]:
             continue
         part = d / (f + ".part")
-        with urllib.request.urlopen(HF.format(repo=config.NEMOTRON_REPO, name=f), timeout=120) as r, open(part, "wb") as out:
+        req = urllib.request.Request(url, headers={"User-Agent": "FreeCallNotes"})
+        with urllib.request.urlopen(req, timeout=120) as r, open(part, "wb") as out:
             while True:
                 chunk = r.read(1 << 20)
                 if not chunk:
@@ -40,6 +41,31 @@ def download_nemotron(progress):
                 progress(min(1.0, done / total))
         part.replace(target)
     progress(1.0)
+
+
+def download_nemotron(progress):
+    """progress(fraction) is called as bytes arrive."""
+    _download([(HF.format(repo=config.NEMOTRON_REPO, name=f), f) for f in config.NEMOTRON_FILES],
+              config.NEMOTRON_DIR, progress)
+
+
+def download_whisper(progress):
+    """Whisper large-v3 turbo (about 1 GB) plus the small Silero voice detector it needs."""
+    items = [(HF.format(repo=config.WHISPER_REPO, name=f), f) for f in config.WHISPER_FILES]
+    items.append((config.VAD_URL, config.VAD_FILE))
+    _download(items, config.WHISPER_DIR, progress)
+
+
+def download(model, progress):
+    {"nemotron": download_nemotron, "moonshine": download_moonshine, "whisper": download_whisper}[model](progress)
+
+
+def remove(model):
+    """Delete a model's files. It downloads again if it's installed again."""
+    import shutil
+    d = {"nemotron": config.NEMOTRON_DIR, "moonshine": config.MOONSHINE_DIR, "whisper": config.WHISPER_DIR}[model]
+    if d.exists():
+        shutil.rmtree(d)
 
 
 def download_moonshine(progress):

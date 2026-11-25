@@ -40,6 +40,7 @@ class App:
         self.close_window_requested = False   # "finish in background": close the window now,
         self.quit_when_done = False           # quit once the double-check is done
         self.updating = False                 # downloading/installing an update (only when the user asks)
+        self.installing = None                # the model being downloaded from Options, if any
         self.update_info = None
 
     # ---------- events to the window ----------
@@ -68,10 +69,16 @@ class App:
 
     # ---------- first run ----------
     def ensure_models(self):
-        """Download whatever models the current options need (Moonshine only if it is switched on)."""
+        """Download what the current options need: Nemotron on first run, Moonshine if it's switched on but
+        missing. Whisper (1 GB) is only ever downloaded from Options; if its files are gone, it's switched off."""
         s = config.settings()
+        if s.get("whisper") != "off" and not config.whisper_ready():
+            s = config.update_settings(whisper="off")
+            if all(s[m] == "off" for m in config.MODELS):
+                s = config.update_settings(**config._fallback_model())
+        need_nem = s.get("nemotron") != "off" and not config.nemotron_ready()
         need_moon = s.get("moonshine") != "off" and not config.moonshine_ready()
-        if config.nemotron_ready() and not need_moon:
+        if not (need_nem or need_moon):
             self._preload()
             return
         self.set_state("setup")
@@ -81,7 +88,7 @@ class App:
                     self.setup[name] = round(x, 3)
                     self.emit({"type": "setup", "setup": self.setup})
                 return f
-            if not config.nemotron_ready():
+            if need_nem:
                 models.download_nemotron(p("nemotron"))
             self.setup["nemotron"] = 1.0
             if need_moon:
@@ -92,6 +99,69 @@ class App:
             log.exception("model download")
             self.set_state("error", error=f"Could not download the speech models ({e}). "
                                           "Check your internet connection and reopen the app.")
+
+    # ---------- installing and removing models (from Options) ----------
+    def install_model(self, m):
+        if m not in config.MODELS:
+            return {"ok": False}
+        if self.installing:
+            return {"ok": False, "error": "Another model is downloading. Try again when it's finished."}
+        if config.installed(m):
+            return {"ok": True}
+        self.installing = m
+        threading.Thread(target=self._install, args=(m,), daemon=True).start()
+        self.emit({"type": "settings", "settings": self.settings_view()})
+        return {"ok": True}
+
+    def _install(self, m):
+        last = [0.0]
+
+        def prog(x):
+            if x - last[0] >= 0.01 or x >= 1.0:
+                last[0] = x
+                self.emit({"type": "model", "model": m, "progress": round(x, 3)})
+        try:
+            models.download(m, prog)
+            log.info("model installed: %s", m)
+            self.emit({"type": "model", "model": m, "done": True})
+        except Exception as e:
+            log.exception("install %s", m)
+            self.emit({"type": "model", "model": m, "error": f"The download didn't finish ({e}). Check your internet connection and try again."})
+        finally:
+            self.installing = None
+            self.emit({"type": "settings", "settings": self.settings_view()})
+
+    def remove_model(self, m):
+        if m not in config.MODELS:
+            return {"ok": False}
+        if self.busy() or self.installing == m:
+            return {"ok": False, "error": "Wait until the current call or download has finished."}
+        s = config.settings()
+        if s.get(m) != "off":
+            others = [x for x in config.MODELS if x != m and s.get(x) != "off"]
+            if not others:
+                return {"ok": False, "error": "This is the only model you're using. Choose another model first."}
+            during = next((x for x in config.MODELS if s.get(x) == "during" and x != m), "none")
+            config.save_settings({"during": during, "after": [x for x in others if s.get(x) == "after"]})
+        try:
+            models.remove(m)
+        except Exception as e:
+            log.exception("remove %s", m)
+            return {"ok": False, "error": f"Couldn't remove all of its files ({e})."}
+        log.info("model removed: %s", m)
+        self.emit({"type": "settings", "settings": self.settings_view()})
+        return {"ok": True, "settings": self.settings_view()}
+
+    # ---------- call pop-ups ----------
+    def set_popups(self, on):
+        from . import watcher
+        config.update_settings(call_popups=bool(on))
+        try:
+            watcher.enable() if on else watcher.disable()
+        except Exception:
+            log.exception("call pop-ups")
+        self.emit({"type": "settings", "settings": self.settings_view()})
+        return {"ok": True}
 
     def _ticker(self):
         """Every half second while a call is active: what each transcription model is doing."""
@@ -122,6 +192,8 @@ class App:
             LiveASR.load()
         self.set_state("idle", pending=len(self.pending_calls()))
         threading.Thread(target=self._auto_update_check, daemon=True).start()
+        from . import watcher
+        threading.Thread(target=watcher.sync, daemon=True).start()
 
     # ---------- recording ----------
     def start(self, want_me=True, want_them=True):
@@ -264,21 +336,35 @@ class App:
         return {"ok": False}
 
     def _show_transcript(self, call_dir, show=True):
+        """Shows (and saves as Transcript.txt) the best single transcript: Whisper for a call that isn't in
+        English, otherwise Nemotron, then Moonshine, then Whisper."""
         import json as _j
         from .export import _flag_echo
+
+        def side_files(prefix):
+            out = []
+            for k in ("me", "them"):
+                f = call_dir / f"{prefix}_{k}.json"
+                if f.exists():
+                    out += [dict(l, key=k) for l in _j.loads(f.read_text(encoding="utf-8"))]
+            return out if any((call_dir / f"{prefix}_{k}.json").exists() for k in ("me", "them")) else None
         try:
-            if (call_dir / "nemotron_lines.json").exists():
+            lang = _j.loads((call_dir / "whisper_meta.json").read_text()).get("language") \
+                if (call_dir / "whisper_meta.json").exists() else None
+            whisper = side_files("whisper")
+            if whisper is not None and lang and lang != "en":
+                lines = whisper
+            elif (call_dir / "nemotron_lines.json").exists():
                 lines = _j.loads((call_dir / "nemotron_lines.json").read_text())
             else:
-                lines = []
-                for k in ("me", "them"):
-                    f = call_dir / f"second_pass_{k}.json"
-                    if f.exists():
-                        lines += [dict(l, key=k) for l in _j.loads(f.read_text())]
-                lines.sort(key=lambda l: l["start"])
-                for n, l in enumerate(lines):
-                    l["id"] = n
+                lines = side_files("second_pass")
+                if lines is None:
+                    lines = whisper or []
+            lines.sort(key=lambda l: l["start"])
+            for n, l in enumerate(lines):
+                l["id"] = n
         except Exception:
+            log.exception("show transcript")
             return
         _flag_echo([l for l in lines if l["key"] == "me"], [l for l in lines if l["key"] == "them"])
         if show:
@@ -349,6 +435,8 @@ class App:
                 s["notice_version"] = config.NOTICE_VERSION
                 s["app_version"] = config.VERSION
         s["update_check_days"] = config.UPDATE_CHECK_DAYS
+        s["installed"] = {m: config.installed(m) for m in config.MODELS}
+        s["installing"] = self.installing
         return s
 
     def busy(self):
@@ -425,6 +513,8 @@ class App:
             if self.busy():                       # a call started meanwhile: don't interrupt it
                 raise RuntimeError("a call is in progress")
             self.emit({"type": "update", "phase": "installing", "latest": info["latest"]})
+            from . import watcher
+            watcher.stop()                        # its files are about to be replaced; the new version restarts it
             updater.apply(new_dir)
             time.sleep(1.5)                       # let the window show the message
             self.quit_requested = True            # main loop closes the window and exits; the helper takes over
@@ -543,6 +633,16 @@ def make_handler(app):
                     self._json(app.set_update_prefs(body.get("auto", True)))
                 elif self.path == "/api/update_dismiss":
                     self._json(app.dismiss_update())
+                elif self.path == "/api/model_install":
+                    self._json(app.install_model(body.get("model")))
+                elif self.path == "/api/model_remove":
+                    self._json(app.remove_model(body.get("model")))
+                elif self.path == "/api/popups":
+                    self._json(app.set_popups(body.get("on", True)))
+                elif self.path == "/api/whisper_language":
+                    config.update_settings(whisper_language=str(body.get("language") or "auto")[:12])
+                    app.emit({"type": "settings", "settings": app.settings_view()})
+                    self._json({"ok": True})
                 elif self.path == "/api/fresh":
                     self._json(app.fresh_start())
                 elif self.path == "/api/finish_in_background":

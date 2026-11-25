@@ -24,4 +24,5 @@ IMPORTANT
   with NO WARRANTY. See legal\LICENSE.txt and legal\THIRD_PARTY_NOTICES.txt.
 
 REMOVE
-Close FreeCallNotes and delete this folder (and the desktop icon).
+Turn off "Call pop-ups" in Options (this removes its Startup shortcut), close FreeCallNotes
+and delete this folder (and the desktop icon).

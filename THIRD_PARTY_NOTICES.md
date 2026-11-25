@@ -2,12 +2,14 @@
 
 FreeCallNotes itself is licensed under the GNU General Public License v3.0 or later (see [LICENSE](LICENSE)). It uses the third-party components below, each under its own license. All of these licenses allow use in, and distribution with, a GPL-3.0 program. Their license texts are included inside each package in the Windows build (`python/Lib/site-packages/<package>-<version>.dist-info/`) and at the links below.
 
-## Speech models (downloaded on first use, not included in this repository or the zip)
+## Speech models (downloaded when installed, not included in this repository or the zip)
 
 | Model | Publisher | License |
 |---|---|---|
 | Nemotron Speech Streaming EN 0.6B, int8 ONNX conversion for sherpa-onnx (`csukuangfj/sherpa-onnx-nemotron-speech-streaming-en-0.6b-int8-2026-01-14`) | NVIDIA (original model, `nvidia/nemotron-speech-streaming-en-0.6b`); ONNX conversion by the sherpa-onnx project | NVIDIA Open Model License Agreement: https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license/ |
 | Moonshine v2 Medium Streaming (English) | Moonshine AI | MIT License: https://github.com/moonshine-ai/moonshine (Note: Moonshine's non-English models use a separate non-commercial community license. FreeCallNotes only uses the English model.) |
+| Whisper large-v3 turbo, int8 ONNX conversion for sherpa-onnx (`csukuangfj/sherpa-onnx-whisper-turbo`), optional | OpenAI (original model, `openai/whisper-large-v3-turbo`); ONNX conversion by the sherpa-onnx project | MIT License: https://github.com/openai/whisper |
+| Silero VAD (voice activity detector, downloaded with Whisper) | Silero Team | MIT License: https://github.com/snakers4/silero-vad |
 
 **Notice required by the NVIDIA Open Model License:**
 
@@ -38,6 +40,8 @@ NVIDIA's license includes terms on lawful and ethical use, and does not grant pe
 | google-crc32c | 1.9.0 | Apache-2.0 | https://github.com/googleapis/python-crc32c |
 | sounddevice | 0.5.6 | MIT | https://github.com/spatialaudio/python-sounddevice |
 | cffi | 2.1.1 | MIT-0 | https://github.com/python-cffi/cffi |
+| comtypes (call pop-ups: Windows audio notifications) | 1.5.0 | MIT | https://github.com/enthought/comtypes |
+| pycaw (Windows audio interface definitions, used by the call pop-ups) | 20260927 | MIT | https://github.com/AndreMiras/pycaw |
 | pycparser | 3.12 | BSD-3-Clause | https://github.com/eliben/pycparser |
 
 Notes:

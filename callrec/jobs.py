@@ -77,7 +77,7 @@ class CallJobs:
         self.jobs = []
 
     def models(self, mode):
-        return [m for m in ("nemotron", "moonshine") if self.s.get(m) == mode]
+        return [m for m in config.MODELS if self.s.get(m) == mode]
 
     def start_during(self):
         """At Record. Live display goes to the first model running during the call."""
@@ -94,7 +94,7 @@ class CallJobs:
         t0 = time.perf_counter()
         if all_after:
             self.jobs = [Job(m, "after", self.call_dir, False, self._live_emit)
-                         for m in ("nemotron", "moonshine") if self.s.get(m) != "off"]
+                         for m in config.MODELS if self.s.get(m) != "off" and config.installed(m)]
         else:
             for m in self.models("after"):
                 self.jobs.append(Job(m, "after", self.call_dir, False, self._live_emit))
