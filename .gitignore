@@ -1,0 +1,22 @@
+# build outputs
+/dist/
+/build/cache/
+__pycache__/
+*.pyc
+
+# a running copy of the app (never commit recordings, models or personal settings)
+/python/
+/models/
+/Call Notes/
+/window-profile/
+settings.json
+*.log
+.shortcut-*
+*.wav
+Transcript for AI - *.txt
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
