@@ -167,6 +167,11 @@
   .about { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
   .about .flabel { font: 500 13px/1 var(--display); letter-spacing: .02em; margin-bottom: 6px; color: var(--text); }
   .about p { margin: 0 0 8px; }
+  .about label { display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 13px; margin: 12px 0 4px; }
+  .about label input { accent-color: var(--user); margin: 0; }
+  .updbar { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; display: flex; align-items: center;
+            justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13px; }
+  .updbar.hidden { display: none; }
 
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
@@ -185,6 +190,13 @@
 </header>
 
 <main>
+  <div class="updbar hidden" id="updBar" role="status">
+    <span id="updBarText"></span>
+    <div class="actions">
+      <button class="primary" id="btnUpdBar" onclick="startUpdate()">Update</button>
+      <button class="secondary" id="btnUpdLater" onclick="dismissUpdate()">Not now</button>
+    </div>
+  </div>
   <!-- where things are: always visible -->
   <section class="status" aria-live="polite">
     <ol class="rail" id="rail">
@@ -288,6 +300,11 @@
     <p>Free, open-source software under the GNU General Public License v3. It comes with no warranty.</p>
     <p>Speech models: NVIDIA Nemotron (NVIDIA Open Model License) and Moonshine (MIT License). Recordings and transcripts stay on this computer.</p>
     <div class="actions">
+      <button class="secondary" id="btnUpd" onclick="checkUpdate()">Check for updates</button>
+    </div>
+    <label><input type="checkbox" id="optAutoUpd" onchange="post('/api/update_prefs', { auto: this.checked })">Check for updates every 30 days</label>
+    <p class="hint" id="updMsg" aria-live="polite">Updating is always optional: FreeCallNotes only tells you when a new version is out, and installs it only if you click Update. Your calls, settings and models are kept.</p>
+    <div class="actions">
       <button class="secondary" onclick="post('/api/open',{what:'legal'})">Licenses and notices</button>
       <button class="ghost" onclick="openOptions(false); showNotice(true)">Show the recording notice</button>
     </div>
@@ -305,7 +322,7 @@
       <dt>Take care with AI assistants</dt>
       <dd>The "Transcript for AI" file contains everything said on the call. Only give it to an AI assistant you and your organisation are allowed to use, because that service will receive the content.</dd>
       <dt>Your recordings stay here</dt>
-      <dd>Recordings and transcripts are saved only on this computer. FreeCallNotes connects to the internet only to download its speech models.</dd>
+      <dd>Recordings and transcripts are saved only on this computer. FreeCallNotes connects to the internet only to download its speech models and to check for updates (at most every 30 days, or when you ask). Updates are only installed if you choose to.</dd>
       <dt>No warranty</dt>
       <dd>FreeCallNotes is free software provided "as is", without any warranty, under the GNU General Public License v3.</dd>
     </dl>
@@ -451,6 +468,8 @@ function openOptions(on) {
 function applySettings(s) {
   settings = s || {};
   if (settings.app_version) $('appVersion').textContent = 'v' + settings.app_version;
+  $('optAutoUpd').checked = settings.auto_update_check !== false;
+  renderUpdBar();
   if (noticeNeeded() && state !== 'recording') showNotice(true);
   $('folderPath').textContent = settings.notes_dir_effective || '';
   show('btnFolderReset', !!settings.notes_dir);
@@ -467,6 +486,46 @@ function applySettings(s) {
     (n === 2 ? 'The other model adds a second opinion after the call, and the transcript for AI includes both for cross-checking.' : '');
   renderStatus();
 }
+/* ---------- updates (only when the user asks) ---------- */
+let updateReady = null, updating = false;
+function updMsg(t) { $('updMsg').textContent = t; if (updating) $('updBarText').textContent = t; }
+function renderUpdBar() {
+  const v = settings.update_available;
+  const on = !!v && (updating || ['idle', 'done'].includes(state));
+  show('updBar', on);
+  if (on && !updating) $('updBarText').textContent = 'FreeCallNotes ' + v + ' is available.';
+  $('btnUpdBar').disabled = updating; $('btnUpdLater').disabled = updating;
+}
+async function dismissUpdate() { settings.update_available = null; renderUpdBar(); await post('/api/update_dismiss'); }
+async function checkUpdate() {
+  const b = $('btnUpd');
+  if (updateReady) return startUpdate();
+  b.disabled = true; updMsg('Checking for updates…');
+  const r = await post('/api/update_check').catch(() => ({ ok: false }));
+  b.disabled = false;
+  if (!r.ok) { updMsg(r.error || "Couldn't check for updates. Check your internet connection and try again."); return; }
+  if (!r.newer) { updMsg('You have the latest version (v' + r.current + ').'); return; }
+  updateReady = r;
+  b.textContent = 'Update to v' + r.latest;
+  updMsg('Version ' + r.latest + ' is available (' + Math.round((r.size || 0) / 1e6) + ' MB). FreeCallNotes will close and reopen to finish. Your calls, settings and models are kept.');
+}
+async function startUpdate() {
+  if (!['idle', 'done'].includes(state)) { updMsg('Finish the current call first, then update.'); return; }
+  updating = true; renderUpdBar();
+  $('btnUpd').disabled = true; $('btn').disabled = true; updMsg('Downloading the update…');
+  const r = await post('/api/update_start').catch(() => ({ ok: false }));
+  if (!r.ok) { updating = false; updMsg(r.error || "The update couldn't start."); $('btnUpd').disabled = false; $('btn').disabled = false; renderUpdBar(); }
+}
+function onUpdate(ev) {
+  if (ev.phase === 'download') updMsg('Downloading the update… ' + Math.round((ev.progress || 0) * 100) + '%');
+  else if (ev.phase === 'installing') updMsg('Installing version ' + ev.latest + '. FreeCallNotes will close and reopen in a few seconds.');
+  else if (ev.phase === 'available') { settings.update_available = ev.latest; renderUpdBar(); }
+  else if (ev.phase === 'error') {
+    updMsg(ev.error); $('updBarText').textContent = ev.error;
+    updating = false; $('btnUpd').disabled = false; $('btn').disabled = false; $('btnUpdBar').disabled = false; $('btnUpdLater').disabled = false;
+  }
+}
+
 async function chooseFolder() {
   $('folderErr').textContent = ''; show('folderErr', false);
   $('btnFolder').disabled = true; $('btnFolder').textContent = 'Choosing...';
@@ -517,7 +576,7 @@ function setState(s, extra) {
   if (s !== 'recording') { $('barMe').style.width = '0%'; $('barThem').style.width = '0%'; partial = { me: '', them: '' }; }
   if (extra && extra.devices) { $('devMe').textContent = extra.devices.me || 'Not recording'; $('devThem').textContent = extra.devices.them || 'Not recording'; }
   if (extra && extra.pending !== undefined) pendingCount = extra.pending;
-  renderStatus(); renderTranscript();
+  renderStatus(); renderTranscript(); renderUpdBar();
 }
 function connect() {
   const es = new EventSource('/api/events');
@@ -541,6 +600,7 @@ function connect() {
         break;
       case 'lines': lines = ev.lines || []; renderTranscript(); break;
       case 'settings': applySettings(ev.settings); break;
+      case 'update': onUpdate(ev); break;
       case 'live_line': if (['recording', 'stopping', 'processing'].includes(state)) { lines.push(ev.line); renderTranscript(); } break;
       case 'live_partial': if (state === 'recording') { partial[ev.key] = ev.text; renderTranscript(); } break;
       case 'echo': lines.forEach(l => { if (l.id === ev.id) l.echo = true; }); renderTranscript(); break;

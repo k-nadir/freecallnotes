@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 APP_NAME = "FreeCallNotes"
-VERSION = "1.4.1"
+VERSION = "1.4.2"
 # Portable mode: by default calls are saved in a "Call Notes" folder inside the app folder, so the
 # whole app (and everything it records) lives in one folder that can be moved or deleted.
 # Set to False to default to Documents\Call Notes instead. Users can pick any folder in Options.
@@ -66,7 +66,11 @@ DEFAULT_SETTINGS = {
     "show_live": True,        # the model running during the call is shown live
     "notes_dir": None,        # where calls are saved (None = the default folder)
     "notice_accepted": 0,     # NOTICE_VERSION the user last accepted
+    "auto_update_check": True,   # look for a new release at most once every UPDATE_CHECK_DAYS (never installs by itself)
+    "last_update_check": 0,      # when GitHub was last asked (seconds since 1970)
+    "update_available": None,    # newest version seen that is newer than this one, until installed or dismissed
 }
+UPDATE_CHECK_DAYS = 30
 
 
 def settings() -> dict:
@@ -121,6 +125,15 @@ def save_settings(new: dict) -> dict:
     if s["nemotron"] == "off" and s["moonshine"] == "off":
         s["nemotron"] = "during"
     s["show_live"] = "during" in (s["nemotron"], s["moonshine"])
+    (APP_DIR / "settings.json").write_text(json.dumps(s, indent=1))
+    return s
+
+
+def update_settings(**changes) -> dict:
+    """Change individual settings (used for the update preferences)."""
+    import json
+    s = settings()
+    s.update(changes)
     (APP_DIR / "settings.json").write_text(json.dumps(s, indent=1))
     return s
 

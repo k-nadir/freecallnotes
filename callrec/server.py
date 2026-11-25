@@ -39,6 +39,8 @@ class App:
         self.quit_requested = False             # a newer version is starting and asked us to step aside
         self.close_window_requested = False   # "finish in background": close the window now,
         self.quit_when_done = False           # quit once the double-check is done
+        self.updating = False                 # downloading/installing an update (only when the user asks)
+        self.update_info = None
 
     # ---------- events to the window ----------
     def emit(self, ev):
@@ -119,11 +121,14 @@ class App:
             self.set_state("loading")
             LiveASR.load()
         self.set_state("idle", pending=len(self.pending_calls()))
+        threading.Thread(target=self._auto_update_check, daemon=True).start()
 
     # ---------- recording ----------
     def start(self, want_me=True, want_them=True):
         if self.state not in ("idle", "done"):
             return {"ok": False, "error": f"busy ({self.state})"}
+        if self.updating:
+            return {"ok": False, "error": "FreeCallNotes is updating. It will reopen in a moment."}
         self.lines = []
         self.last_result = None
         self.info = {}
@@ -335,10 +340,99 @@ class App:
         s["notes_dir_default"] = str(config.default_notes_root())
         s["notice_version"] = config.NOTICE_VERSION
         s["app_version"] = config.VERSION
+        if s.get("update_available"):
+            from .updater import _vtuple, current_version
+            if _vtuple(s["update_available"]) <= _vtuple(current_version()):
+                s = config.update_settings(update_available=None)
+                s["notes_dir_effective"] = str(config.notes_root())
+                s["notes_dir_default"] = str(config.default_notes_root())
+                s["notice_version"] = config.NOTICE_VERSION
+                s["app_version"] = config.VERSION
+        s["update_check_days"] = config.UPDATE_CHECK_DAYS
         return s
 
     def busy(self):
         return self.state in ("recording", "stopping", "processing", "exporting", "catching_up")
+
+    # ---------- updates (only when the user clicks "Check for updates") ----------
+    def check_update(self):
+        from . import updater
+        try:
+            info = updater.check()
+        except Exception as e:
+            log.warning("update check failed: %s", e)
+            return {"ok": False, "error": "Couldn't check for updates. Check your internet connection and try again."}
+        self.update_info = info
+        log.info("update check: current %s, latest %s", info["current"], info["latest"])
+        config.update_settings(last_update_check=int(time.time()),
+                               update_available=info["latest"] if info["newer"] else None)
+        self.emit({"type": "settings", "settings": self.settings_view()})
+        return {k: info[k] for k in ("ok", "current", "latest", "newer", "size", "page")}
+
+    def _auto_update_check(self):
+        """At most once every 30 days, and only if the user hasn't turned it off: ask GitHub whether a newer
+        release exists and, if so, show "Update available". Nothing is downloaded or installed unless the
+        user clicks Update."""
+        s = config.settings()
+        if not s.get("auto_update_check", True):
+            return
+        if time.time() - float(s.get("last_update_check") or 0) < config.UPDATE_CHECK_DAYS * 86400:
+            return
+        time.sleep(5)                                  # let the app finish starting first
+        r = self.check_update()
+        if r.get("ok") and r.get("newer"):
+            self.emit({"type": "update", "phase": "available", "latest": r["latest"]})
+
+    def set_update_prefs(self, auto):
+        config.update_settings(auto_update_check=bool(auto))
+        self.emit({"type": "settings", "settings": self.settings_view()})
+        return {"ok": True}
+
+    def dismiss_update(self):
+        config.update_settings(update_available=None)
+        self.emit({"type": "settings", "settings": self.settings_view()})
+        return {"ok": True}
+
+    def start_update(self):
+        if self.busy() or self.state not in ("idle", "done"):
+            return {"ok": False, "error": "Finish the current call first, then update."}
+        if self.updating:
+            return {"ok": True}
+        self.updating = True
+        threading.Thread(target=self._run_update, args=(self.update_info,), daemon=True).start()
+        return {"ok": True}
+
+    def _run_update(self, info):
+        from . import updater
+        try:
+            if not (info and info.get("newer")):
+                info = updater.check()
+                self.update_info = info
+                if not info["newer"]:
+                    config.update_settings(update_available=None)
+                    self.updating = False
+                    self.emit({"type": "settings", "settings": self.settings_view()})
+                    self.emit({"type": "update", "phase": "error", "error": "You already have the latest version."})
+                    return
+            self.emit({"type": "update", "phase": "download", "progress": 0.0})
+            last = [0.0]
+
+            def prog(x):
+                if x - last[0] >= 0.01 or x >= 1.0:
+                    last[0] = x
+                    self.emit({"type": "update", "phase": "download", "progress": round(x, 3)})
+            new_dir = updater.stage(info, prog)
+            if self.busy():                       # a call started meanwhile: don't interrupt it
+                raise RuntimeError("a call is in progress")
+            self.emit({"type": "update", "phase": "installing", "latest": info["latest"]})
+            updater.apply(new_dir)
+            time.sleep(1.5)                       # let the window show the message
+            self.quit_requested = True            # main loop closes the window and exits; the helper takes over
+        except Exception as e:
+            log.exception("update")
+            self.updating = False
+            self.emit({"type": "update", "phase": "error",
+                       "error": f"The update didn't install ({e}). Nothing was changed."})
 
     def fresh_start(self):
         """The app was opened again: clear the last call off the screen (it stays in Saved calls)."""
@@ -441,6 +535,14 @@ def make_handler(app):
                     self._json(app.set_folder(None))
                 elif self.path == "/api/finish_pending":
                     self._json(app.finish_pending())
+                elif self.path == "/api/update_check":
+                    self._json(app.check_update())
+                elif self.path == "/api/update_start":
+                    self._json(app.start_update())
+                elif self.path == "/api/update_prefs":
+                    self._json(app.set_update_prefs(body.get("auto", True)))
+                elif self.path == "/api/update_dismiss":
+                    self._json(app.dismiss_update())
                 elif self.path == "/api/fresh":
                     self._json(app.fresh_start())
                 elif self.path == "/api/finish_in_background":

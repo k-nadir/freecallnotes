@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.2
+- New: **Check for updates** in Options. When a newer release is out, one click downloads it, checks it against its published SHA-256 checksum, installs it and reopens the app. Your calls, settings and speech models are kept.
+- FreeCallNotes looks for a new version at most once every 30 days and shows "Update available" if there is one. Updating is always optional: nothing is installed unless you click Update. You can turn the 30-day check off in Options.
+
 ## 1.4.1
 - Opening the app again now starts on a clean screen instead of showing the last call. Past calls are still in Saved calls.
 - The app notices a closed window within a few seconds, so reopening it straight away no longer brings back the previous session.

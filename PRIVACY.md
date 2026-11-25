@@ -15,15 +15,18 @@ Everything FreeCallNotes records or creates is saved only on your computer, insi
 | Log | `freecallnotes.log` | Technical events for troubleshooting (device names, timings, errors). No audio or transcript text. |
 | Speech models | `models/` | Downloaded model files |
 | Window data | `window-profile/` | The Microsoft Edge profile used only for the FreeCallNotes window |
+| Updates | `.update/` | A downloaded update while it is being installed, and a short install log |
 
 To delete everything, close FreeCallNotes and delete its folder (and your chosen save folder, if you picked one elsewhere). Also delete the FreeCallNotes desktop shortcut if you like.
 
 ## Internet use
 
-FreeCallNotes connects to the internet only to **download the speech models**, and only when they are missing: on first run, or when you turn on a model you haven't used before.
+FreeCallNotes connects to the internet only to **download the speech models**, and only when they are missing (on first run, or when you turn on a model you haven't used before), and to **check for updates**: at most once every 30 days, and whenever you click "Check for updates" in Options. You can turn the 30-day check off in Options. A check only asks GitHub which version is the newest; FreeCallNotes downloads and installs an update only when you click Update.
 
 - NVIDIA Nemotron: from Hugging Face (huggingface.co and its download servers).
 - Moonshine (only if you turn it on in Options): from the Moonshine project's server (download.moonshine.ai).
+
+- Updates: from GitHub (api.github.com to see which release is the latest, then github.com and its download servers for the zip file). The download is checked against the SHA-256 checksum GitHub publishes for it before anything is installed.
 
 Those requests contain nothing about you or your calls beyond what any download does (your IP address and standard request headers, handled under those services' own privacy policies). On networks that block these sites, the model files can be copied into the `models` folder by hand.
 
