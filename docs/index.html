@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FreeCallNotes: free call transcripts for Windows</title>
-<meta name="description" content="A free, open-source call recorder for Windows that records both sides of any call and transcribes it on your own computer.">
+<meta name="description" content="Free, open-source call transcripts for Windows. No installation: unzip, double-click and record. Transcribes both sides of any call on your own computer.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://freecallnotes.com/">
 <meta property="og:title" content="FreeCallNotes: free call transcripts for Windows">
@@ -108,6 +108,10 @@
   .hero { min-height: calc(100vh - var(--nav)); display: flex; align-items: center; padding: var(--s-8) 0; }
   .hero .wrap { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-8); align-items: center; }
   .hero .lead { margin-top: var(--s-5); }
+  .hero .lead strong { color: var(--ink); font-weight: 600; }
+  .promise { list-style: none; margin: var(--s-5) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-5); }
+  .promise li { display: inline-flex; align-items: center; gap: 10px; font: 600 clamp(19px, .6vw + 15px, 24px)/1.2 var(--display); color: var(--ink); }
+  .promise svg { width: 26px; height: 26px; flex: none; padding: 4px; border-radius: 50%; background: rgba(157,184,255,.16); fill: none; stroke: var(--primary); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
   .ctas { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-6); }
   .facts { margin-top: var(--s-5); color: var(--muted); font-size: var(--t-small); }
 
@@ -274,7 +278,12 @@
         <span class="mask"><span>Free call transcripts</span></span>
         <span class="mask"><span>for Windows.</span></span>
       </h1>
-      <p class="lead fade d1">No bot joins your call. FreeCallNotes records both sides of any call and turns it into a transcript on your own computer. It's open source, needs no account and uploads nothing.</p>
+      <ul class="promise fade d1" aria-label="FreeCallNotes is">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Free</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Open source, forever</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>No installation</li>
+      </ul>
+      <p class="lead fade d1"><strong>Plug and play:</strong> unzip, double-click, press Record. FreeCallNotes records both sides of any call and turns it into a transcript on your own computer. No bot joins your call, no account, nothing uploaded.</p>
       <div class="ctas fade d2">
         <a class="btn btn--primary" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest/download/FreeCallNotes-1.4-windows-x64.zip">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 19h16"/></svg>
