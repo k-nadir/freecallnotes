@@ -1,0 +1,506 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FreeCallNotes: free call transcripts for Windows</title>
+<meta name="description" content="A free, open-source call recorder for Windows that records both sides of any call and transcribes it on your own computer.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://freecallnotes.com/">
+<meta property="og:title" content="FreeCallNotes: free call transcripts for Windows">
+<meta property="og:description" content="Records both sides of any call and transcribes it on your own computer. No account, no upload, no meeting bot.">
+<meta property="og:url" content="https://freecallnotes.com/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#131920">
+<style>
+  :root {
+    /* grounds */
+    --g-main: #131920;
+    --g-alt: #171e27;
+    --g-dark: #0f141a;
+    --panel: #1c2430;
+    /* ink */
+    --ink: #eef1f5;
+    --muted: #a7b2c1;           /* labels, meta, grey second halves */
+    --line: rgba(238,241,245,.13);
+    /* one accent */
+    --accent: #f2a93b;
+    --accent-ink: #1a1206;
+    /* app-mock signal colours (UI only) */
+    --user: #9db8ff;
+    --system: #4fb3bf;
+    --ok: #7bc59a;
+
+    --display: "Bahnschrift", "DIN Alternate", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+    --body: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+
+    --t-h1: clamp(36px, 3.2vw + 14px, 62px);
+    --t-h2: clamp(30px, 1.8vw + 22px, 44px);
+    --t-h3: 22px;
+    --t-lead: 19px;
+    --t-body: 16px;
+    --t-small: 14px;
+    --t-label: 13px;
+
+    --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+    --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px;
+
+    --nav: 72px; --padt: 120px; --padb: 72px; --gut: 80px; --hgap: 48px;
+    --r-sm: 8px; --r-md: 12px; --r-lg: 20px;
+
+    --m-in: 150ms; --m-out: 120ms; --m-press: 90ms;
+    --ease: cubic-bezier(.2,.8,.2,1);
+    --m-ease-enter: cubic-bezier(.22,1,.36,1);
+  }
+  @media (max-width: 639px) {
+    :root { --nav: 56px; --padt: 96px; --padb: 48px; --gut: 24px; --hgap: 40px; }
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--g-main); color: var(--ink); font: var(--t-body)/1.6 var(--body); -webkit-font-smoothing: antialiased; overflow-x: hidden; hyphens: auto; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 600; margin: 0; hyphens: manual; text-wrap: balance; }
+  h1 { font-size: var(--t-h1); line-height: 1.04; letter-spacing: -.015em; }
+  h2 { font-size: var(--t-h2); line-height: 1.1; letter-spacing: -.01em; }
+  h3 { font-size: var(--t-h3); line-height: 1.25; }
+  h1 .grey, h2 .grey { color: var(--muted); }
+  p { margin: 0; max-width: 62ch; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 var(--gut); }
+  section { padding: var(--padt) 0 var(--padb); }
+  .lead { font-size: var(--t-lead); line-height: 1.6; margin-top: var(--s-4); }
+  .head { margin-bottom: var(--s-7); }
+
+  /* ---------- nav ---------- */
+  header.nav { position: fixed; inset: 0 0 auto; height: var(--nav); z-index: 10; background: var(--g-main); border-bottom: 1px solid var(--line); }
+  header.nav .wrap { height: 100%; display: flex; align-items: center; gap: var(--s-6); }
+  .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 600 20px/1 var(--display); margin-right: auto; min-height: 44px; }
+  .brand .mark { width: 20px; height: 20px; flex: none; }
+  .navlinks { display: flex; gap: var(--s-5); }
+  .navlinks a { font: 500 15px/1 var(--body); text-decoration: none; color: var(--muted); padding: 14px 0; white-space: nowrap; transition: color var(--m-out) var(--ease); }
+  .navlinks a:hover { color: var(--ink); transition-duration: var(--m-in); }
+  main { padding-top: var(--nav); }
+
+  /* ---------- buttons ---------- */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 48px; padding: 0 var(--s-5); border-radius: var(--r-sm);
+         font: 600 16px/1 var(--body); text-decoration: none; white-space: nowrap;
+         transition: transform var(--m-out) var(--ease), background-color var(--m-out) var(--ease), border-color var(--m-out) var(--ease); }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+  .btn--primary { background: var(--accent); color: var(--accent-ink); }
+  .btn--secondary { border: 1px solid rgba(238,241,245,.28); color: var(--ink); }
+  .nav .btn { height: 44px; }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { transform: translateY(-1px); transition-duration: var(--m-in); }
+    .btn--primary:hover { background: color-mix(in oklab, var(--accent), var(--g-main) 14%); }
+    .btn--secondary:hover { border-color: rgba(238,241,245,.5); background: rgba(238,241,245,.04); }
+    .btn:active { transform: translateY(1px) scale(.985); transition-duration: var(--m-press); }
+  }
+  .link { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .link:hover { text-decoration-thickness: 2px; }
+
+  /* ---------- hero ---------- */
+  .hero { min-height: calc(100vh - var(--nav)); display: flex; align-items: center; padding: var(--s-8) 0; }
+  .hero .wrap { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-8); align-items: center; }
+  .hero .lead { margin-top: var(--s-5); }
+  .ctas { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-6); }
+  .facts { margin-top: var(--s-5); color: var(--muted); font-size: var(--t-small); }
+
+  /* app mock: the product's real UI, in one frame */
+  .app { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; font-size: 14px; position: relative; }
+  .app .bar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+  .app .bar b { font: 600 14px/1 var(--display); color: var(--muted); }
+  .app .body { padding: 20px; }
+  .onair { display: flex; align-items: center; gap: 10px; }
+  .onair .rec { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(242,169,59,.22); }
+  .onair h3 { font-size: 20px; }
+  .onair time { margin-left: auto; font: 600 15px/1 var(--display); color: var(--accent); font-variant-numeric: tabular-nums; }
+  .app .sub { color: var(--muted); font-size: 13px; margin: 4px 0 16px; }
+  .tracks { display: grid; gap: 8px; margin-bottom: 16px; }
+  .track { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 10px; font: 500 13px/1 var(--display); color: var(--muted); }
+  .wave { height: 26px; display: flex; align-items: center; gap: 2px; overflow: hidden; }
+  .wave i { flex: 1; min-width: 2px; height: 100%; border-radius: 2px; background: currentColor; transform: scaleY(.5); transition: transform 300ms var(--ease); }
+  .track.u .wave { color: var(--user); }
+  .track.s .wave { color: var(--system); }
+  .lines { background: var(--g-dark); border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px; display: grid; gap: 10px; align-content: start; height: 236px; overflow: hidden; }
+  .line { display: grid; grid-template-columns: 62px 1fr; gap: 10px; font-size: 13.5px; line-height: 1.45; }
+  .line time { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; opacity: .75; }
+  .line b { font: 600 13px/1 var(--display); margin-right: 6px; }
+  .line.u b { color: var(--user); }
+  .line.s b { color: var(--system); }
+  .line.new { animation: lineIn 300ms var(--m-ease-enter); }
+  @keyframes lineIn { from { opacity: 0; transform: translateY(6px); } }
+  .app .foot { display: flex; gap: 8px; margin-top: 14px; }
+  .app .foot div { flex: 1; text-align: center; border-radius: var(--r-sm); padding: 11px; font: 600 13.5px/1 var(--display); }
+  .app .foot .stop { background: rgba(238,241,245,.06); border: 1px solid var(--line); }
+  .app .foot .ai { border: 1px dashed var(--line); color: var(--muted); }
+  .pause { position: absolute; right: 12px; bottom: 12px; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--muted); display: grid; place-items: center; cursor: pointer; padding: 0; }
+  .pause:hover { color: var(--ink); }
+  .pause svg { width: 12px; height: 12px; }
+  .app { padding-bottom: 0; }
+  .app .body { padding-bottom: 56px; }
+
+  /* ---------- works-with strip ---------- */
+  .strip { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--g-alt); }
+  .strip .wrap { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-6); align-items: center; padding-top: var(--s-5); padding-bottom: var(--s-5); }
+  .strip p { color: var(--muted); font-size: var(--t-small); max-width: none; }
+  .strip ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-6); font: 500 16px/1.4 var(--display); }
+
+  /* ---------- steps ---------- */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); }
+  .step { border-top: 2px solid var(--line); padding-top: var(--s-5); }
+  .step:first-child { border-top-color: var(--accent); }
+  .step h3 { margin-bottom: var(--s-3); }
+  .step p { color: var(--ink); opacity: .9; }
+
+  /* ---------- rows (features, faq) ---------- */
+  .split { display: grid; grid-template-columns: 5fr 7fr; gap: var(--s-8); align-items: start; }
+  .rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .rows > li { display: grid; grid-template-columns: 220px 1fr; gap: var(--s-5); padding: var(--s-5) 0; border-bottom: 1px solid var(--line); }
+  .rows h3 { font-size: 18px; }
+  .rows p { color: var(--ink); opacity: .9; }
+
+  /* ---------- privacy ---------- */
+  .alt { background: var(--g-alt); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .ledger { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .ledger li { display: flex; align-items: baseline; gap: var(--s-4); padding: var(--s-4) 0; border-bottom: 1px solid var(--line); }
+  .ledger li span small { display: block; color: var(--muted); font-size: var(--t-small); }
+  .ledger li b { margin-left: auto; font: 500 13px/1 var(--body); white-space: nowrap; color: var(--ok); }
+  .ledger li b.once { color: var(--accent); }
+
+  /* ---------- install ---------- */
+  .req { list-style: none; margin: var(--s-6) 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .req li { display: flex; justify-content: space-between; gap: var(--s-4); padding: var(--s-3) 0; border-bottom: 1px solid var(--line); }
+  .req li span:first-child { color: var(--muted); }
+  ol.how { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+  ol.how li { padding: var(--s-5) 0; border-bottom: 1px solid var(--line); }
+  ol.how h3 { font-size: 18px; margin-bottom: var(--s-2); }
+  ol.how p { opacity: .9; }
+  kbd { font: 600 14px/1 var(--body); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 3px 7px; }
+
+  /* ---------- faq ---------- */
+  .faq > li { grid-template-columns: 1fr 1.4fr; }
+
+  /* ---------- closing ---------- */
+  footer.closing { border-top: 1px solid var(--line); background: var(--g-dark); }
+  .close { padding: var(--padt) 0 var(--s-9); display: flex; justify-content: space-between; align-items: end; gap: var(--s-7); flex-wrap: wrap; }
+  .close .ctas { margin-top: 0; }
+  .btn--xl { height: 56px; padding: 0 32px; font-size: 17px; }
+  @media (hover: hover) and (pointer: fine) { .btn--xl:hover { transform: translateY(-2px); } }
+  .directory { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--s-6); padding: var(--s-7) 0; border-top: 1px solid var(--line); }
+  .directory h3 { font: 500 13px/1 var(--body); color: var(--muted); margin-bottom: var(--s-3); }
+  .directory ul { list-style: none; margin: 0; padding: 0; }
+  .directory li a { display: inline-block; padding: 10px 0; text-decoration: none; }
+  .directory li a:hover { color: var(--accent); }
+  .directory p { color: var(--muted); }
+  .legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-3); padding: var(--s-5) 0 var(--s-7); border-top: 1px solid var(--line); color: var(--muted); font-size: var(--t-label); }
+
+  /* ---------- hero entrance (once, on load) ---------- */
+  [data-motion] .mask { display: block; overflow: hidden; padding-bottom: .06em; }
+  [data-motion] .mask > span { display: block; animation: rise 700ms var(--m-ease-enter) both; }
+  [data-motion] .mask:nth-child(2) > span { animation-delay: 80ms; }
+  @keyframes rise { from { transform: translateY(105%); } }
+  [data-motion] .fade { animation: fadeUp 520ms var(--m-ease-enter) both; }
+  [data-motion] .fade.d1 { animation-delay: 200ms; }
+  [data-motion] .fade.d2 { animation-delay: 260ms; }
+  [data-motion] .fade.d3 { animation-delay: 320ms; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } }
+  [data-motion] .settle { animation: settle 1100ms var(--m-ease-enter) both; }
+  @keyframes settle { from { opacity: 0; transform: scale(1.03); } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+
+  /* ---------- mobile action bar ---------- */
+  .mbar { display: none; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 1023px) {
+    .hero .wrap, .split { grid-template-columns: 1fr; }
+    .hero { min-height: 0; }
+    .navlinks { display: none; }
+    .rows > li, .faq > li { grid-template-columns: 1fr; gap: var(--s-2); }
+  }
+  @media (max-width: 639px) {
+    .steps, .directory { grid-template-columns: 1fr; }
+    .steps { gap: var(--s-6); }
+    .head { margin-bottom: var(--s-6); }
+    .ctas .btn { width: 100%; }
+    .nav .btn { display: none; }
+    .line { grid-template-columns: 1fr; gap: 2px; }
+    .mbar { display: block; position: fixed; inset: auto 0 0; z-index: 10; padding: 12px 24px calc(12px + env(safe-area-inset-bottom)); background: var(--g-main); border-top: 1px solid var(--line); }
+    .mbar .btn { width: 100%; }
+    body { padding-bottom: 72px; }
+    .close { padding-top: var(--padt); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Replace khawajamnadir-bot/freecallnotes with your GitHub repo everywhere on this page (see SETUP.md). -->
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="FreeCallNotes home">
+      <svg class="mark" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="4.5" fill="#f2a93b"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#f2a93b" stroke-opacity=".4" stroke-width="1.6"/></svg>
+      FreeCallNotes
+    </a>
+    <nav class="navlinks" aria-label="Sections">
+      <a href="#how">Steps</a>
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#install">Install</a>
+      <a href="#faq">Questions</a>
+      <a href="https://github.com/khawajamnadir-bot/freecallnotes">GitHub</a>
+    </nav>
+    <a class="btn btn--primary" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest">Download for Windows</a>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1>
+        <span class="mask"><span>Free call transcripts</span></span>
+        <span class="mask"><span>for Windows.</span></span>
+      </h1>
+      <p class="lead fade d1">No bot joins your call. FreeCallNotes records both sides of any call and turns it into a transcript on your own computer. It's open source, needs no account and uploads nothing.</p>
+      <div class="ctas fade d2">
+        <a class="btn btn--primary" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 19h16"/></svg>
+          Download for Windows
+        </a>
+        <a class="btn btn--secondary" href="#how">See the three steps</a>
+      </div>
+      <p class="facts fade d3">Windows 10 and 11 Â· free Â· about 1&nbsp;GB on disk with the speech model</p>
+    </div>
+
+    <div class="app settle" role="img" aria-label="The FreeCallNotes window during a call, showing your voice and the other side transcribed live">
+      <div class="bar"><b>Call Recorder</b><b style="font-weight:500">Options</b></div>
+      <div class="body">
+        <div class="onair"><span class="rec"></span><h3>Recording</h3><time id="clock">00:12:47</time></div>
+        <p class="sub">Microphone and computer sound, transcribed as you talk</p>
+        <div class="tracks">
+          <div class="track u"><span>User</span><div class="wave" data-wave></div></div>
+          <div class="track s"><span>System</span><div class="wave" data-wave></div></div>
+        </div>
+        <div class="lines" id="lines">
+          <div class="line s"><time>00:12:02</time><span><b>System</b>So the pilot would start with the London team, roughly forty people.</span></div>
+          <div class="line u"><time>00:12:15</time><span><b>User</b>Makes sense. What timeline are you working towards?</span></div>
+          <div class="line s"><time>00:12:21</time><span><b>System</b>Ideally live by the end of January, then a review in March.</span></div>
+        </div>
+        <div class="foot"><div class="stop">Stop</div><div class="ai">Show transcript for AI</div></div>
+      </div>
+      <button class="pause" id="pause" type="button" aria-label="Pause the animation" aria-pressed="false">
+        <svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="wrap">
+    <p>Works with any app that uses your microphone and speakers, including</p>
+    <ul><li>Zoom</li><li>Microsoft Teams</li><li>Google Meet</li><li>Slack</li><li>WhatsApp</li></ul>
+  </div>
+</div>
+
+<section id="how">
+  <div class="wrap">
+    <div class="head">
+      <h2>Three steps from call to notes.</h2>
+      <p class="lead">FreeCallNotes listens to your microphone and your computer's sound, the same audio you hear in your headphones. It doesn't matter which app the call happens in.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h3>Press record</h3>
+        <p>Your voice and the other side are saved as two separate tracks, and the transcript builds while you talk.</p>
+      </div>
+      <div class="step">
+        <h3>Press stop</h3>
+        <p>The transcript is finished within moments and saved in a dated folder next to both audio files.</p>
+      </div>
+      <div class="step">
+        <h3>Paste into your AI</h3>
+        <p>Drop the "Transcript for AI" file into ChatGPT, Claude or Gemini. It includes the prompt for cleaning up the transcript and writing your notes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="padding-top:0">
+  <div class="wrap split">
+    <div>
+      <h2>What the recorder does.</h2>
+      <p class="lead">It records, transcribes and gets out of the way. Writing the summary is left to the AI assistant you already use.</p>
+    </div>
+    <ul class="rows">
+      <li><h3>Two separate tracks</h3><p>You and the other side are recorded apart, so the transcript always knows who said what.</p></li>
+      <li><h3>Live transcript</h3><p>Words appear while you talk, so you can check what was just said without asking.</p></li>
+      <li><h3>No meeting bot</h3><p>Nobody sees a notetaker join the call. It also works on phone calls routed through your PC.</p></li>
+      <li><h3>Echo check</h3><p>If your speakers leak into your mic, the app flags the repeated lines in the transcript.</p></li>
+      <li><h3>A file for your AI</h3><p>One file holds the transcript and a ready-written prompt, so the notes come out the same way every time.</p></li>
+      <li><h3>Folders you control</h3><p>Each call gets a dated folder in a location you choose. Delete it whenever you like.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="alt" id="privacy">
+  <div class="wrap split">
+    <div>
+      <h2>Privacy on your own computer.</h2>
+      <p class="lead">Most AI notetakers upload your audio to be transcribed. FreeCallNotes runs the speech models locally, so after setup it works with the Wi-Fi turned off.</p>
+      <p class="lead">The code is open source on <a class="link" href="https://github.com/khawajamnadir-bot/freecallnotes">GitHub</a>, so anyone can check exactly what it does.</p>
+    </div>
+    <ul class="ledger" aria-label="What leaves your computer">
+      <li><span>Your audio<small>Both tracks, saved as WAV files</small></span><b>Stays on your PC</b></li>
+      <li><span>Your transcripts<small>Plain text in your own folder</small></span><b>Stays on your PC</b></li>
+      <li><span>An account or email<small>There isn't one to make</small></span><b>Never asked for</b></li>
+      <li><span>Usage tracking<small>No analytics in the app or on this site</small></span><b>None</b></li>
+      <li><span>Speech model<small>Downloaded from Hugging Face on first run</small></span><b class="once">Once, about 670&nbsp;MB</b></li>
+    </ul>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap split">
+    <div>
+      <h2>Install in four steps.</h2>
+      <p class="lead">There's no installer and no admin rights needed. Unzip the folder anywhere and run it. To remove it, delete the folder.</p>
+      <ul class="req">
+        <li><span>System</span><span>Windows 10 or 11</span></li>
+        <li><span>Disk space</span><span>About 1&nbsp;GB</span></li>
+        <li><span>Internet</span><span>First run only</span></li>
+        <li><span>Language</span><span>English</span></li>
+        <li><span>Price</span><span>Free</span></li>
+      </ul>
+    </div>
+    <ol class="how">
+      <li><h3>Download and unzip</h3><p>Get the latest <a class="link" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest">release from GitHub</a> and extract it anywhere, such as your Documents folder.</p></li>
+      <li><h3>Open "Start Call Recorder"</h3><p>If Windows shows "Windows protected your PC", click <kbd>More info</kbd> and then <kbd>Run anyway</kbd>. The warning appears because the app is new and not code-signed.</p></li>
+      <li><h3>Wait for "Ready to record"</h3><p>The first run downloads the speech model, about 670&nbsp;MB, once. It also adds a desktop shortcut for next time.</p></li>
+      <li><h3>Put on headphones</h3><p>Headphones stop your mic from picking up the other side through your speakers, which keeps the transcript clean.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="alt" id="faq">
+  <div class="wrap">
+    <div class="head"><h2>Questions about FreeCallNotes.</h2></div>
+    <ul class="rows faq">
+      <li><h3>Is it really free?</h3><p>Yes. There's no trial, no paid tier and no account. All the work happens on your computer, so there are no server costs to pass on.</p></li>
+      <li><h3>Does it work on Mac or Linux?</h3><p>Not yet. It uses a Windows audio feature to capture your computer's sound. If you'd like to help bring it to other systems, the code is on GitHub.</p></li>
+      <li><h3>Which call apps does it work with?</h3><p>Any of them. It records your default microphone and whatever plays through your default speakers or headphones, in shared mode, so your call app keeps working as normal.</p></li>
+      <li><h3>Do I need to tell people I'm recording?</h3><p>Yes. The app doesn't announce itself, and recording laws in many countries and states require everyone on the call to agree. Ask first, and keep recordings only as long as you need them.</p></li>
+      <li><h3>How accurate is the transcript?</h3><p>It uses NVIDIA's Nemotron streaming speech model, with an optional second pass from Moonshine. Clear English on a headset comes out well. Crosstalk and noisy rooms lower accuracy, and the AI clean-up step fixes most small slips.</p></li>
+      <li><h3>Why doesn't it write the summary?</h3><p>Keeping the summary in your own AI assistant keeps the app small, free and private, and you choose who sees your notes.</p></li>
+      <li><h3>Where are recordings saved?</h3><p>In a "Call Notes" folder next to the app, one dated folder per call. You can change the location in Options.</p></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="closing">
+  <div class="wrap">
+    <div class="close">
+      <h2>Record your next call for free.</h2>
+      <div class="ctas">
+        <a class="btn btn--primary btn--xl" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest">Download for Windows</a>
+      </div>
+    </div>
+    <div class="directory">
+      <div>
+        <h3>About</h3>
+        <p>FreeCallNotes is open-source software, provided as is. You're responsible for getting consent before you record a call.</p>
+      </div>
+      <div>
+        <h3>Project</h3>
+        <ul>
+          <li><a href="https://github.com/khawajamnadir-bot/freecallnotes">Source code</a></li>
+          <li><a href="https://github.com/khawajamnadir-bot/freecallnotes/releases">Releases</a></li>
+          <li><a href="https://github.com/khawajamnadir-bot/freecallnotes/issues">Report a problem</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>This page</h3>
+        <ul>
+          <li><a href="#how">Steps</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="#faq">Questions</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <span>Â© <span id="year">2026</span> FreeCallNotes Â· no cookies or trackers on this site</span>
+      <span>Speech recognition by NVIDIA Nemotron and Moonshine via sherpa-onnx. Product names are trademarks of their owners.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="mbar"><a class="btn btn--primary" href="https://github.com/khawajamnadir-bot/freecallnotes/releases/latest">Download for Windows</a></div>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // One timed loop: the recording illustration (waveforms, clock, a new line every few seconds).
+  var waves = Array.prototype.map.call(document.querySelectorAll('[data-wave]'), function (w) {
+    var bars = [];
+    for (var i = 0; i < 48; i++) { var b = document.createElement('i'); w.appendChild(b); bars.push(b); }
+    return bars;
+  });
+  var script = [
+    ['u', "Great. I'll send a summary after this call."],
+    ['s', 'Perfect, and copy in Priya from finance.'],
+    ['u', 'Will do. Anything else before we wrap up?'],
+    ['s', 'Just the budget sign-off, which I can chase.']
+  ];
+  var lines = document.getElementById('lines'), clock = document.getElementById('clock');
+  var secs = 12 * 60 + 47, tick = 0, next = 0, timer = null;
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function fmt(n) { return [Math.floor(n / 3600), Math.floor(n % 3600 / 60), n % 60].map(function (x) { return String(x).padStart(2, '0'); }).join(':'); }
+  function shapeWaves() {
+    waves.forEach(function (bars, t) {
+      var talking = (t === 0) === (script[(next + script.length - 1) % script.length][0] === 'u');
+      bars.forEach(function (b, i) {
+        var amp = talking ? 0.35 + Math.random() * 0.65 : 0.12 + Math.random() * 0.12;
+        b.style.transform = 'scaleY(' + amp.toFixed(2) + ')';
+      });
+    });
+  }
+  function addLine() {
+    var l = script[next % script.length]; next++;
+    var d = document.createElement('div');
+    d.className = 'line new ' + l[0];
+    d.innerHTML = '<time>' + fmt(secs) + '</time><span><b>' + (l[0] === 'u' ? 'User' : 'System') + '</b></span>';
+    d.lastChild.appendChild(document.createTextNode(l[1]));
+    lines.appendChild(d);
+    while (lines.children.length > 4) lines.removeChild(lines.firstElementChild);
+  }
+  function step() {
+    tick++;
+    if (tick % 3 === 0) { secs++; clock.textContent = fmt(secs); }
+    if (tick % 10 === 0) addLine();
+    shapeWaves();
+  }
+  function play() { if (!timer) timer = setInterval(step, 330); }
+  function stop() { clearInterval(timer); timer = null; }
+
+  var pause = document.getElementById('pause');
+  if (reduced) { addLine(); shapeWaves(); pause.hidden = true; }
+  else { addLine(); play(); }
+  pause.addEventListener('click', function () {
+    var paused = !!timer;
+    paused ? stop() : play();
+    pause.setAttribute('aria-pressed', String(paused));
+    pause.setAttribute('aria-label', paused ? 'Play the animation' : 'Pause the animation');
+    pause.innerHTML = paused
+      ? '<svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z"/></svg>'
+      : '<svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg>';
+  });
+</script>
+</body>
+</html>
